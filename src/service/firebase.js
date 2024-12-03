@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 
+import Constants from "expo-constants";
 import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 
