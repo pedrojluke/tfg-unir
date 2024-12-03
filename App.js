@@ -1,21 +1,25 @@
-import HomeScreen from "./src/components/Home"; // Pantalla principal
-import { NavigationContainer } from "@react-navigation/native";
-import NewTronoScreen from "./src/components/AddPaso";
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { StyleSheet, Text, View } from "react-native";
 
-const Stack = createStackNavigator();
+import Constants from "expo-constants";
+import { StatusBar } from "expo-status-bar";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Home"
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="NewTrono" component={NewTronoScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={styles.container}>
+      <Text>Open up App.js to start working on your app!</Text>
+      <Text>
+        Api key de firebase: {Constants.expoConfig.extra.firebase.apiKey}
+      </Text>
+      <StatusBar style="auto" />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
