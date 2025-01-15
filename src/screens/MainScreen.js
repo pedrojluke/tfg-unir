@@ -1,5 +1,5 @@
-import { Appbar, Card, FAB, Paragraph, Title } from "react-native-paper";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Button, Card, Title } from "react-native-paper";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 
@@ -8,61 +8,70 @@ import { db } from "../service/firebase";
 export default function MainScreen({ navigation }) {
   const [pasos, setPasos] = useState([]);
 
-  const fetchPasos = async () => {
-    const pasosCollection = collection(db, "pasos");
-    const pasosSnapshot = await getDocs(pasosCollection);
-    const pasosList = pasosSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setPasos(pasosList);
-  };
-
   useEffect(() => {
+    const fetchPasos = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "pasos"));
+        const pasosData = querySnapshot.docs.map((doc) => doc.data());
+        console.log(pasosData);
+
+        if (Array.isArray(pasosData)) {
+          setPasos(pasosData);
+        } else {
+          console.error("Error al obtener los pasos:", error);
+        }
+      } catch (error) {
+        console.error("Error al obtener los pasos:", error);
+      }
+    };
+
     fetchPasos();
   }, []);
 
   return (
     <View style={styles.container}>
-      <Appbar.Header style={styles.appbar}>
-        <Appbar.Content title="Mis Pasos" titleStyle={styles.appbarTitle} />
-      </Appbar.Header>
+      <Card style={styles.card}>
+        <Card.Content>
+          <Title style={styles.title}>Mis Pasos</Title>
+        </Card.Content>
+      </Card>
 
-      <FlatList
-        data={pasos}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("PasoDetail", {
-                pasoId: item.id,
-                pasoNombre: item.nombre,
-              })
-            }
-          >
+      {Array.isArray(pasos) && pasos.length > 0 ? (
+        <FlatList
+          data={pasos}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
             <Card style={styles.card}>
               <Card.Content>
-                <View style={styles.cardHeader}>
-                  <Title style={styles.cardTitle}>{item.nombre}</Title>
-                </View>
-                <Paragraph style={styles.cardSubtitle}>
-                  {`Trabajaderas: ${item.trabajaderas.length} | Huecos: ${
-                    item.huecos || 0
-                  }`}
-                </Paragraph>
+                <Title style={styles.cardTitle}>{item.nombre}</Title>
+                <Text style={styles.text}>{item.descripcion || ""}</Text>{" "}
+                <Button
+                  mode="contained"
+                  onPress={() =>
+                    navigation.navigate("PasoDetail", {
+                      pasoId: item.id,
+                      pasoNombre: item.nombre,
+                    })
+                  }
+                  style={styles.button}
+                >
+                  Ver detalles
+                </Button>
               </Card.Content>
             </Card>
-          </TouchableOpacity>
-        )}
-      />
+          )}
+        />
+      ) : (
+        <Text style={styles.noDataText}>No hay pasos disponibles.</Text>
+      )}
 
-      <FAB
-        style={styles.fab}
-        icon="plus"
-        label="Añadir Nuevo Paso"
-        onPress={() => navigation.navigate("PasoScreen")}
-      />
+      <Button
+        mode="contained"
+        onPress={() => navigation.navigate("CreateEditPasoScreen")}
+        style={styles.addButton}
+      >
+        Añadir Nuevo Paso
+      </Button>
     </View>
   );
 }
@@ -70,53 +79,45 @@ export default function MainScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
     backgroundColor: "#f4f4f4",
-    paddingTop: 20,
-  },
-  appbar: {
-    backgroundColor: "#1c1c1c",
-    elevation: 10,
-  },
-  appbarTitle: {
-    fontSize: 24,
-    fontWeight: "600",
-    color: "#fff",
-  },
-  listContainer: {
-    paddingBottom: 100,
-    paddingHorizontal: 16,
   },
   card: {
     marginBottom: 20,
     borderRadius: 12,
     elevation: 8,
     backgroundColor: "#fff",
-    borderColor: "#ddd",
-    borderWidth: 1,
-    padding: 15,
+    padding: 16,
   },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#4A148C",
+    textAlign: "center",
+  },
+  addButton: {
+    marginTop: 20,
+    backgroundColor: "#03a9f4",
+    marginBottom: 20,
   },
   cardTitle: {
-    fontSize: 22,
-    fontWeight: "700",
+    fontSize: 20,
+    fontWeight: "bold",
     color: "#4A148C",
   },
-  cardSubtitle: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: 5,
+  text: {
+    fontSize: 16,
+    color: "#333",
+    marginVertical: 8,
   },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#ffb300",
-    borderRadius: 50,
-    elevation: 10,
+  button: {
+    marginTop: 16,
+    backgroundColor: "#6200ee",
+  },
+  noDataText: {
+    fontSize: 18,
+    color: "#333",
+    textAlign: "center",
+    marginTop: 20,
   },
 });
