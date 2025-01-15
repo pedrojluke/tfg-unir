@@ -1,6 +1,6 @@
 import * as SETTINGS from "../utils/Settings";
 
-import { Button, Card, Title } from "react-native-paper";
+import { Button, Card, Text, Title } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
 import { deleteDoc, doc } from "firebase/firestore";
 
@@ -40,7 +40,7 @@ export default function PasoDetailScreen({ navigation, route }) {
         onPress={() => navigation.navigate("CreateEditPasoScreen", { pasoId })}
         style={styles.button}
       >
-        Editar Detalles del Paso
+        <Text>Editar Detalles del Paso</Text>
       </Button>
 
       <Button
@@ -48,7 +48,7 @@ export default function PasoDetailScreen({ navigation, route }) {
         onPress={() => navigation.navigate("EnsayosScreen", { pasoId })}
         style={styles.button}
       >
-        Ensayos
+        <Text>Ensayos</Text>{" "}
       </Button>
 
       <Button
@@ -56,7 +56,7 @@ export default function PasoDetailScreen({ navigation, route }) {
         onPress={() => navigation.navigate("CostalerosScreen", { pasoId })}
         style={styles.button}
       >
-        Listar Costaleros
+        <Text>Ver costaleros</Text>
       </Button>
 
       <Button
@@ -64,7 +64,7 @@ export default function PasoDetailScreen({ navigation, route }) {
         onPress={() => navigation.navigate("AddCostaleroScreen", { pasoId })}
         style={styles.button}
       >
-        Añadir Costalero
+        <Text>Añadir costalero</Text>
       </Button>
 
       <Button
@@ -72,7 +72,7 @@ export default function PasoDetailScreen({ navigation, route }) {
         onPress={handleDeletePaso}
         style={[styles.button, { backgroundColor: "red" }]}
       >
-        Borrar Paso
+        <Text>Borrar paso</Text>
       </Button>
     </View>
   );

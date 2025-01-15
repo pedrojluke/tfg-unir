@@ -1,7 +1,7 @@
 import * as SETTINGS from "../utils/Settings";
 
 import { Alert, StyleSheet, View } from "react-native";
-import { Button, Card, TextInput, Title } from "react-native-paper";
+import { Button, Card, Text, TextInput, Title } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -90,7 +90,7 @@ export default function CreateEditPasoScreen({ navigation, route }) {
             onPress={handleSavePaso}
             style={styles.button}
           >
-            {pasoId ? "Actualizar Paso" : "Crear Paso"}
+            <Text>{pasoId ? "Actualizar Paso" : "Crear Paso"}</Text>
           </Button>
         </Card.Content>
       </Card>

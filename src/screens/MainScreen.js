@@ -55,7 +55,7 @@ export default function MainScreen({ navigation }) {
                   }
                   style={styles.button}
                 >
-                  Ver detalles
+                  <Text>Ver detalles</Text>
                 </Button>
               </Card.Content>
             </Card>
@@ -70,7 +70,7 @@ export default function MainScreen({ navigation }) {
         onPress={() => navigation.navigate("CreateEditPasoScreen")}
         style={styles.addButton}
       >
-        Añadir Nuevo Paso
+        <Text>Añadir Nuevo Paso</Text>
       </Button>
     </View>
   );

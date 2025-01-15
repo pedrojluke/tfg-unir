@@ -1,6 +1,6 @@
 import * as SETTINGS from "../utils/Settings";
 
-import { Button, Card, TextInput, Title } from "react-native-paper";
+import { Button, Card, Text, TextInput, Title } from "react-native-paper";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { addDoc, collection } from "firebase/firestore";
@@ -28,6 +28,7 @@ export default function AddCostaleroScreen({ navigation, route }) {
         ...newCostalero,
         pasoId,
       });
+      alert("guardado con exito hno");
       setNewCostalero({
         nombre: "",
         apellidos: "",
@@ -102,7 +103,7 @@ export default function AddCostaleroScreen({ navigation, route }) {
             style={styles.addButton}
             labelStyle={styles.buttonText}
           >
-            Guardar Costalero
+            <Text>Guardar Costalero</Text>
           </Button>
         </Card.Content>
       </Card>
