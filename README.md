@@ -1,5 +1,5 @@
 ![Texto Descripción generada
-automáticamente](media/image1.png){width="4.203104768153981in"
+automáticamente](./media/media/image1.png){width="4.203104768153981in"
 height="0.9462478127734033in"}
 
 Universidad Internacional de La Rioja
@@ -925,7 +925,7 @@ o faroles, inimaginables en sus orígenes por las limitaciones propias de
 la época en cuestión.
 
 ![Escala de tiempo Descripción generada
-automáticamente](media/image2.jpg){width="6.299305555555556in"
+automáticamente](./media/media/image2.jpg){width="6.299305555555556in"
 height="3.504166666666667in"}
 
 []{#_Toc191154535 .anchor}Figura . Esquema de una procesión en la calle.
@@ -997,7 +997,7 @@ también llamados contraguías.
 
 ![Un grupo de personas en una tienda Descripción generada
 automáticamente con confianza
-media](media/image3.jpg){width="4.266666666666667in"
+media](./media/media/image3.jpg){width="4.266666666666667in"
 height="2.845833333333333in"}
 
 []{#_Toc191154536 .anchor}Figura . Paso malagueño. Fuente: De museos por
@@ -1012,7 +1012,8 @@ llamados varales, portando el trono con el hombro, yendo a cara
 descubierta y vistiendo la túnica de la hermandad.
 
 ![Imagen que contiene edificio, tabla, grande, lugar Descripción
-generada automáticamente](media/image4.jpg){width="2.12799978127734in"
+generada
+automáticamente](./media/media/image4.jpg){width="2.12799978127734in"
 height="3.1904746281714784in"}
 
 []{#_Toc191154537 .anchor}Figura . Paso estilo sevillano. Fuente: Gente
@@ -1037,7 +1038,7 @@ Santa, esta labor pasó de ser una labor profesional a ser una labor
 voluntaria o de fe, asumiendo este encargo los fieles y devotos de las
 cofradías de Semana Santa. (Almería noticias, 2014)
 
-![](media/image5.png){width="6.299305555555556in"
+![](./media/media/image5.png){width="6.299305555555556in"
 height="3.3354166666666667in"}
 
 []{#_Toc191154538 .anchor}Figura . Interior de un paso de Semana Santa.
@@ -1060,7 +1061,7 @@ altura de la trabajadera hay que suplementarlo con tacos de madera para
 compensar esa falta de altura.
 
 ![Imagen que contiene hombre, tabla, niño, joven Descripción generada
-automáticamente](media/image6.jpg){width="3.9519991251093614in"
+automáticamente](./media/media/image6.jpg){width="3.9519991251093614in"
 height="2.9638910761154857in"}
 
 []{#_Toc191154539 .anchor}Figura . Costalero siendo tallado. Jorge
@@ -1198,7 +1199,7 @@ interna de los costaleros durante el recorrido, además de reducir
 costes, ya que los tacos requieren de un desembolso económico.
 
 ![Gráfico, Gráfico de dispersión El contenido generado por IA puede ser
-incorrecto.](media/image7.png){width="4.5698337707786525in"
+incorrecto.](./media/media/image7.png){width="4.5698337707786525in"
 height="2.929005905511811in"}
 
 []{#_Toc191154540 .anchor}Figura . Distribución de costaleros año 2025.
@@ -1343,7 +1344,7 @@ gestión propiamente dicha.
 ### CostalGo
 
 ![CostalGO Lnk.Bio · link in
-bio](media/image8.png){width="1.7677165354330708in"
+bio](./media/media/image8.png){width="1.7677165354330708in"
 height="1.7677165354330708in"}CostalGo es "la herramienta definitiva
 para capataces y costaleros de Semana Santa" según se puede extraer de
 su página web, [www.costalgo.com](http://www.costalgo.com).
@@ -1386,7 +1387,7 @@ necesidades que cubren este TFG son las inherentes a la colocación de
 costaleros en un paso de Semana Santa de forma automática, eligiendo la
 opción óptima de todas las posibles. Es gratuita.
 
-![Texto, Carta](media/image9.jpeg){width="1.4328357392825897in"
+![Texto, Carta](./media/media/image9.jpeg){width="1.4328357392825897in"
 height="3.100860673665792in"}
 
 []{#_Toc191154542 .anchor}Figura . CostalGo no soporta asignación
@@ -1432,7 +1433,7 @@ Es decir, una actualización por año.
 No es gratuita.
 
 ![Interfaz de usuario gráfica Descripción generada
-automáticamente](media/image10.png){width="6.299305555555556in"
+automáticamente](./media/media/image10.png){width="6.299305555555556in"
 height="1.5625in"}
 
 []{#_Toc191154543 .anchor}Figura . Funcionamiento de GesHdad. Fuente:
@@ -1467,7 +1468,7 @@ Se divide en seis módulos principales:
 -   El futuro. Eventos o acción social.
 
 > ![Interfaz de usuario gráfica, Aplicación Descripción generada
-> automáticamente](media/image11.png){width="4.194029965004375in"
+> automáticamente](./media/media/image11.png){width="4.194029965004375in"
 > height="2.88787510936133in"}
 
 []{#_Toc191154544 .anchor}Figura . Módulo directorio de GherCof. Fuente
@@ -1506,7 +1507,7 @@ Se organiza en seis módulos principales:
 
 -   Miembros. Perfil del usuario que está conectado a la aplicación
 
-> ![home](media/image12.png){width="2.7661154855643044in"
+> ![home](./media/media/image12.png){width="2.7661154855643044in"
 > height="2.1791043307086615in"}
 
 []{#_Toc191154545 .anchor}Figura . Panel de control de HermandApp.
@@ -1959,7 +1960,7 @@ el coste y maximizando las preferencias, sin incumplir ninguna
 restricción ni duplicar asignaciones. (Ávila Herrera, 1997).
 
 ![Diagrama Descripción generada
-automáticamente](media/image13.png){width="2.7686187664041997in"
+automáticamente](./media/media/image13.png){width="2.7686187664041997in"
 height="2.784028871391076in"}
 
 []{#_Toc191154546 .anchor}Figura . Grafo de un problema de transporte.
@@ -1995,7 +1996,7 @@ resolver problemas para los que no existe ningún algoritmo eficiente
 (José Javier Peleato, 2020).
 
 ![Diagrama Descripción generada
-automáticamente](media/image14.png){width="2.3472222222222223in"
+automáticamente](./media/media/image14.png){width="2.3472222222222223in"
 height="1.562399387576553in"}
 
 []{#_Toc191154547 .anchor}Figura . Esquema general de un algoritmo de
@@ -2090,7 +2091,7 @@ Para llevarlo a cabo, los pasos son los siguientes:
 5.  Fin
 
 ![Calendario Descripción generada
-automáticamente](media/image15.png){width="4.694444444444445in"
+automáticamente](./media/media/image15.png){width="4.694444444444445in"
 height="3.5208333333333335in"}
 
 []{#_Toc191154548 .anchor}Figura . Iteraciones del algoritmo húngaro
@@ -2244,7 +2245,7 @@ tanto, con compromisos a no tan largo plazo. (Rodríguez & Dorado
 Vicente, 2015)
 
 ![Diagrama Descripción generada
-automáticamente](media/image16.png){width="6.299305555555556in"
+automáticamente](./media/media/image16.png){width="6.299305555555556in"
 height="3.5430555555555556in"}
 
 []{#_Toc191154549 .anchor}Figura . Comparación agile vs waterfall.
@@ -2281,8 +2282,8 @@ producto y ser capaz de tener tareas listas para ser desarrolladas.
 (Schwaber, s. f.)
 
 <figure>
-<img src="media/image17.png" style="width:4.29245in;height:4.20659in"
-alt="Product Backlog" />
+<img src="./media/media/image17.png"
+style="width:4.29245in;height:4.20659in" alt="Product Backlog" />
 <figcaption><p><span id="_Toc191154550" class="anchor"></span>Figura 16.
 Product backlog. Scrum.org</p></figcaption>
 </figure>
@@ -2496,7 +2497,8 @@ proyecto para este trabajo. (*¿Qué es Miro? -- Centro de ayuda de Miro*,
 s. f.)
 
 <figure>
-<img src="media/image18.png" style="width:6.29931in;height:2.75069in"
+<img src="./media/media/image18.png"
+style="width:6.29931in;height:2.75069in"
 alt="Imagen que contiene Diagrama Descripción generada automáticamente" />
 <figcaption><p><span id="_Toc191154551" class="anchor"></span>Figura .
 App de miro para este proyecto</p></figcaption>
@@ -2507,7 +2509,8 @@ Url: <https://miro.com/app/>
 ### Visual Studio Code
 
 <figure>
-<img src="media/image19.png" style="width:6.29931in;height:3.39792in"
+<img src="./media/media/image19.png"
+style="width:6.29931in;height:3.39792in"
 alt="Captura de pantalla de computadora Descripción generada automáticamente" />
 <figcaption><p><span id="_Toc191154552" class="anchor"></span>Figura .
 Visual Studio Code</p></figcaption>
@@ -2518,7 +2521,8 @@ Visual Studio Code</p></figcaption>
 Zotero para la gestión de la bibliografía
 
 <figure>
-<img src="media/image20.png" style="width:6.29931in;height:3.3875in"
+<img src="./media/media/image20.png"
+style="width:6.29931in;height:3.3875in"
 alt="Interfaz de usuario gráfica, Texto, Aplicación, Correo electrónico Descripción generada automáticamente" />
 <figcaption><p><span id="_Toc191154553" class="anchor"></span>Figura .
 Zotero</p></figcaption>
@@ -2530,7 +2534,8 @@ Esta plataforma online gratuita permite crearnos proyectos *Scrum* y
 gestionarlos de una forma bastante intuitiva y versátil.
 
 <figure>
-<img src="media/image21.png" style="width:5.32232in;height:2.33581in"
+<img src="./media/media/image21.png"
+style="width:5.32232in;height:2.33581in"
 alt="Interfaz de usuario gráfica, Aplicación Descripción generada automáticamente" />
 <figcaption><p><span id="_Toc191154554" class="anchor"></span>Figura .
 Proyecto en MeuScrum</p></figcaption>
@@ -2546,7 +2551,8 @@ añadiendo además potentes capas de personalización cómo la creación de
 proyectos online o páginas web.
 
 <figure>
-<img src="media/image22.png" style="width:5.20118in;height:2.36808in"
+<img src="./media/media/image22.png"
+style="width:5.20118in;height:2.36808in"
 alt="Captura de pantalla de computadora Descripción generada automáticamente" />
 <figcaption><p><span id="_Toc191154555" class="anchor"></span>Figura .
 Página principal del proyecto en GitHub</p></figcaption>
@@ -2595,7 +2601,7 @@ y estimarlas, para luego ver la capacidad total y priorizar en
 consecuencia. Y sobre todo, ver hasta dónde se puede llegar.
 
 ![Diagrama Descripción generada
-automáticamente](media/image23.jpg){width="6.299305555555556in"
+automáticamente](./media/media/image23.jpg){width="6.299305555555556in"
 height="2.65625in"}
 
 []{#_Toc191154556 .anchor}Figura . Resultado del User Story Mapping.
@@ -2878,7 +2884,7 @@ sistema, poniendo el foco en la calidad y el rendimiento.
 ## Diagrama de caso de uso
 
 ![Diagrama Descripción generada
-automáticamente](media/image24.jpg){width="6.299305555555556in"
+automáticamente](./media/media/image24.jpg){width="6.299305555555556in"
 height="6.872222222222222in"}
 
 []{#_Toc191154557 .anchor}Figura . Diagrama de caso de uso
@@ -3067,7 +3073,7 @@ llevar a cabo este proyecto.
 ### React Native
 
 ![Icono El contenido generado por IA puede ser
-incorrecto.](media/image25.png){width="1.6936417322834645in"
+incorrecto.](./media/media/image25.png){width="1.6936417322834645in"
 height="1.0386100174978128in"}Una vez valorados todos los pros y contras
 de cada una de las tecnologías para la realización de este TFG se ha
 optado por **React Native,** debido básicamente a la gran comunidad y
@@ -3101,7 +3107,8 @@ compilar sin tener que hacer nada más. (*Introducing Hot Reloading ·
 React Native*, 2016).
 
 ![A React Native UI pointing out native elements like Views,
-ScrollViews, and more](media/image26.png){width="3.143688757655293in"
+ScrollViews, and
+more](./media/media/image26.png){width="3.143688757655293in"
 height="3.0064490376202975in"}
 
 []{#_Toc191154559 .anchor}Figura . Estructura de una pantalla en
@@ -3138,7 +3145,7 @@ propiedades que controlan un componente:
 ### Expo
 
 ![Icono El contenido generado por IA puede ser
-incorrecto.](media/image27.png){width="1.2138735783027121in"
+incorrecto.](./media/media/image27.png){width="1.2138735783027121in"
 height="1.2138735783027121in"}Expo es un ecosistema dentro de React
 Native que facilita el desarrollo, la compilación y el despliegue de
 proyectos en React Native. Una de las desventajas del uso de React
@@ -3273,7 +3280,7 @@ diferenciadas entre sí:
     almacenamiento de los datos en la aplicación.
 
 ![Imagen que contiene Diagrama El contenido generado por IA puede ser
-incorrecto.](media/image28.png){width="6.299305555555556in"
+incorrecto.](./media/media/image28.png){width="6.299305555555556in"
 height="3.55625in"}
 
 []{#_Toc191154561 .anchor}Figura . Diseño arquitectónico de la
@@ -3700,7 +3707,7 @@ casuística o carga de trabajo. (Google, Inc., s. f.)
 
 []{#_Toc191154585 .anchor}Tabla . Colección asignaciones de Firebase
 
-## ![Imagen que contiene Interfaz de usuario gráfica Descripción generada automáticamente](media/image29.png){width="2.425in" height="6.857638888888889in"}Implementación del algoritmo de distribución
+## ![Imagen que contiene Interfaz de usuario gráfica Descripción generada automáticamente](./media/media/image29.png){width="2.425in" height="6.857638888888889in"}Implementación del algoritmo de distribución
 
 []{#_Toc191154562 .anchor}Figura 28. Resultado de distribución de
 costaleros automática
