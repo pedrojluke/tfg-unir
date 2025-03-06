@@ -51,6 +51,6 @@ $ npm start
 
 Este proyecto está bajo la licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
 
-## 👥 Autor(es)
+## 👥 Autor
 
 - **Pedro José Luque Ordóñez** - [GitHub](https://github.com/pedrojluke)
