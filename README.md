@@ -36,7 +36,8 @@ $ npm install
 
 # Crear una nueva aplicación en firebase
 
-# Añadir archivo .env en la raíz del proyecto con los datos creados en el paso anterior (ejemplo env.example en el repositorio)
+# Añadir archivo .env en la raíz del proyecto con los datos
+# creados en el paso anterior (ejemplo env.example en el repositorio)
 ```
 
 ## 🚀 Uso
