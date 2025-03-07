@@ -14,7 +14,7 @@
 ## 📂 Estructura del Proyecto
 
 ```
-📦 NombreDelProyecto
+📦 tfg-unir
 ├── 📂 src          # Código fuente4
 │   ├── 📂 service  # Servicios
 │   ├── 📂 screens  # Componentes
