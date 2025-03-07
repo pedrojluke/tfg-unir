@@ -15,9 +15,12 @@
 
 ```
 📦 NombreDelProyecto
-├── 📂 src          # Código fuente
-├── 📂 docs         # Documentación
-├── 📂 tests        # Pruebas
+├── 📂 src          # Código fuente4
+│   ├── 📂 service  # Servicios
+│   ├── 📂 screens  # Componentes
+│   ├── 📂 utils    # Constantes y otros
+├── 📜 .env         # API keys de Firebase
+├── 📜 App.js       # Main del proyecto
 ├── 📜 README.md    # Documentación principal
 └── 📜 package.json # Configuración del proyecto
 ```
