@@ -14,7 +14,7 @@
 ## 📂 Estructura del Proyecto
 
 ```
-📦 tfg-unir
+📦 NombreDelProyecto
 ├── 📂 src          # Código fuente
 ├── 📂 docs         # Documentación
 ├── 📂 tests        # Pruebas
