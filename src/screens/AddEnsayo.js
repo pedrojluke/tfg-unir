@@ -143,128 +143,142 @@ const AddEnsayo = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>
-          {isEditing ? "Editar Ensayo" : "Nuevo Ensayo"}
-        </Text>
+      {loading ? ( // 🔴 Muestra el spinner si estamos cargando datos en modo edición
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={styles.loadingText}>Cargando ensayo...</Text>
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Text style={styles.title}>
+            {isEditing ? "Editar Ensayo" : "Nuevo Ensayo"}
+          </Text>
 
-        <Button
-          mode="contained"
-          onPress={() => setShowDatePicker(true)}
-          style={styles.dateButton}
-          labelStyle={styles.buttonText}
-        >
-          Seleccionar Fecha: {dayjs(fechaEnsayo).format("DD/MM/YYYY")}
-        </Button>
+          <Button
+            mode="contained"
+            onPress={() => setShowDatePicker(true)}
+            style={styles.dateButton}
+            labelStyle={styles.buttonText}
+          >
+            Seleccionar Fecha: {dayjs(fechaEnsayo).format("DD/MM/YYYY")}
+          </Button>
 
-        {showDatePicker && (
-          <DateTimePicker
-            value={fechaEnsayo}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => {
-              setShowDatePicker(false);
-              if (selectedDate) setFechaEnsayo(selectedDate);
-            }}
-          />
-        )}
+          {showDatePicker && (
+            <DateTimePicker
+              value={fechaEnsayo}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) setFechaEnsayo(selectedDate);
+              }}
+            />
+          )}
 
-        <Card style={styles.listCard}>
-          <Card.Title title="Asistencia de Costaleros" />
-          <Card.Content style={styles.listContainer}>
-            {loading ? (
-              <ActivityIndicator
-                animating={true}
-                size="large"
-                color={theme.colors.primary}
-              />
-            ) : costaleros.length > 0 ? (
-              <ScrollView style={styles.scrollableList}>
-                {costaleros.map((costalero) => (
-                  <List.Item
-                    key={costalero.id}
-                    title={`${costalero.nombre} ${costalero.apellidos}`}
-                    description={`Altura: ${costalero.altura} cm`}
-                    left={(props) => <List.Icon {...props} icon="account" />}
-                    right={(props) => (
-                      <List.Icon
-                        {...props}
-                        icon={
-                          asistencia.includes(costalero.id)
-                            ? "check-circle"
-                            : "checkbox-blank-circle-outline"
-                        }
-                        color={
-                          asistencia.includes(costalero.id)
-                            ? theme.colors.primary
-                            : "#ccc"
-                        }
-                      />
-                    )}
-                    onPress={() => toggleAsistencia(costalero.id)}
-                  />
-                ))}
-              </ScrollView>
-            ) : (
-              <Text style={styles.noDataText}>
-                No hay costaleros registrados
-              </Text>
-            )}
-          </Card.Content>
-        </Card>
-
-        {/* Contenedor del contador y botón "Asignar Costaleros" */}
-        <View style={styles.counterContainer}>
-          {/* Contador de Costaleros Seleccionados */}
-          <Card style={styles.counterCard}>
-            <Card.Content>
-              <Text style={styles.counterText}>
-                Costaleros Seleccionados: {asistencia.length}
-              </Text>
+          <Card style={styles.listCard}>
+            <Card.Title title="Asistencia de Costaleros" />
+            <Card.Content style={styles.listContainer}>
+              {costaleros.length > 0 ? (
+                <ScrollView style={styles.scrollableList}>
+                  {costaleros.map((costalero) => (
+                    <List.Item
+                      key={costalero.id}
+                      title={`${costalero.nombre} ${costalero.apellidos}`}
+                      description={`Altura: ${costalero.altura} cm`}
+                      left={(props) => <List.Icon {...props} icon="account" />}
+                      right={(props) => (
+                        <List.Icon
+                          {...props}
+                          icon={
+                            asistencia.includes(costalero.id)
+                              ? "check-circle"
+                              : "checkbox-blank-circle-outline"
+                          }
+                          color={
+                            asistencia.includes(costalero.id)
+                              ? theme.colors.primary
+                              : "#ccc"
+                          }
+                        />
+                      )}
+                      onPress={() => toggleAsistencia(costalero.id)}
+                    />
+                  ))}
+                </ScrollView>
+              ) : (
+                <Text style={styles.noDataText}>
+                  No hay costaleros registrados
+                </Text>
+              )}
             </Card.Content>
           </Card>
 
-          {/* Botón Asignar Costaleros */}
+          {/* Contador de Costaleros Seleccionados */}
+          <View style={styles.counterContainer}>
+            <Card style={styles.counterCard}>
+              <Card.Content>
+                <Text style={styles.counterText}>
+                  Costaleros Seleccionados: {asistencia.length}
+                </Text>
+              </Card.Content>
+            </Card>
+
+            {/* Botón Asignar Costaleros */}
+            <Button
+              mode="contained"
+              onPress={() =>
+                navigation.navigate("AsignarCostaleros", { pasoId, asistencia })
+              }
+              style={styles.assignButton}
+              labelStyle={styles.buttonText}
+              disabled={
+                asistencia.length === 0 ||
+                dayjs(fechaEnsayo).isBefore(dayjs(), "day")
+              }
+            >
+              Asignar Costaleros
+            </Button>
+          </View>
+        </ScrollView>
+      )}
+
+      {/* Botón Guardar/Actualizar Ensayo */}
+      {!loading && (
+        <View style={styles.fixedButtonContainer}>
           <Button
             mode="contained"
-            onPress={() =>
-              navigation.navigate("AsignarCostaleros", { pasoId, asistencia })
-            }
-            style={styles.assignButton}
+            onPress={saveEnsayo}
+            disabled={loading}
+            style={styles.fixedButton}
             labelStyle={styles.buttonText}
-            disabled={
-              asistencia.length === 0 ||
-              dayjs(fechaEnsayo).isBefore(dayjs(), "day")
-            } // Deshabilitado si no hay costaleros o el ensayo es pasado
           >
-            Asignar Costaleros
+            {loading ? (
+              <ActivityIndicator animating={true} color="#ffffff" />
+            ) : isEditing ? (
+              "Actualizar Ensayo"
+            ) : (
+              "Guardar Ensayo"
+            )}
           </Button>
         </View>
-      </ScrollView>
-
-      {/* Botón Guardar/Actualizar Ensayo, fijo al fondo */}
-      <View style={styles.fixedButtonContainer}>
-        <Button
-          mode="contained"
-          onPress={saveEnsayo}
-          disabled={loading}
-          style={styles.fixedButton}
-          labelStyle={styles.buttonText}
-        >
-          {loading ? (
-            <ActivityIndicator animating={true} color="#ffffff" />
-          ) : isEditing ? (
-            "Actualizar Ensayo"
-          ) : (
-            "Guardar Ensayo"
-          )}
-        </Button>
-      </View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F7F7F7",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
   container: {
     flex: 1,
     backgroundColor: "#F7F7F7",
