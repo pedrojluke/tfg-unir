@@ -23,7 +23,7 @@ const AddEnsayo = () => {
 
   const [fechaEnsayo, setFechaEnsayo] = useState(new Date());
   const [costaleros, setCostaleros] = useState([]);
-  const [asistencia, setAsistencia] = useState([]); // Ahora usamos un array
+  const [asistencia, setAsistencia] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -54,7 +54,6 @@ const AddEnsayo = () => {
     }
   };
 
-  // Función para marcar/desmarcar la asistencia de un costalero
   const toggleAsistencia = (costaleroId) => {
     setAsistencia((prevAsistencia) =>
       prevAsistencia.includes(costaleroId)
@@ -67,11 +66,11 @@ const AddEnsayo = () => {
     try {
       setLoading(true);
       await addDoc(collection(db, `pasos/${pasoId}/ensayos`), {
-        fecha: dayjs(fechaEnsayo).format("YYYY-MM-DD"), // Fecha en formato correcto
-        costaleros: asistencia, // IDs de costaleros que asistieron
+        fecha: dayjs(fechaEnsayo).format("YYYY-MM-DD"),
+        costaleros: asistencia,
       });
 
-      navigation.goBack(); // Volver automáticamente a EnsayosMenu
+      navigation.goBack();
     } catch (error) {
       console.error("Error saving ensayo: ", error);
     } finally {
@@ -107,7 +106,7 @@ const AddEnsayo = () => {
 
         <Card style={styles.listCard}>
           <Card.Title title="Asistencia de Costaleros" />
-          <Card.Content>
+          <Card.Content style={styles.listContainer}>
             {loading ? (
               <ActivityIndicator
                 animating={true}
@@ -115,34 +114,33 @@ const AddEnsayo = () => {
                 color={theme.colors.primary}
               />
             ) : costaleros.length > 0 ? (
-              costaleros.map((costalero) => (
-                <List.Item
-                  key={costalero.id}
-                  title={`${costalero.nombre} ${costalero.apellidos}`}
-                  description={`Altura: ${costalero.altura} cm`}
-                  left={(props) => <List.Icon {...props} icon="account" />}
-                  right={(props) => (
-                    <List.Icon
-                      {...props}
-                      icon={
-                        asistencia.includes(costalero.id)
-                          ? "check-circle"
-                          : "checkbox-blank-circle-outline"
-                      }
-                      color={
-                        asistencia.includes(costalero.id)
-                          ? theme.colors.primary
-                          : "#ccc"
-                      }
-                    />
-                  )}
-                  onPress={() => toggleAsistencia(costalero.id)}
-                  style={[
-                    styles.listItem,
-                    asistencia.includes(costalero.id) && styles.selectedItem,
-                  ]}
-                />
-              ))
+              <ScrollView style={styles.scrollableList}>
+                {costaleros.map((costalero) => (
+                  <List.Item
+                    key={costalero.id}
+                    title={`${costalero.nombre} ${costalero.apellidos}`}
+                    description={`Altura: ${costalero.altura} cm`}
+                    left={(props) => <List.Icon {...props} icon="account" />}
+                    right={(props) => (
+                      <List.Icon
+                        {...props}
+                        icon={
+                          asistencia.includes(costalero.id)
+                            ? "check-circle"
+                            : "checkbox-blank-circle-outline"
+                        }
+                        color={
+                          asistencia.includes(costalero.id)
+                            ? theme.colors.primary
+                            : "#ccc"
+                        }
+                      />
+                    )}
+                    onPress={() => toggleAsistencia(costalero.id)}
+                    style={styles.listItem} // No aplica sombreado al seleccionar
+                  />
+                ))}
+              </ScrollView>
             ) : (
               <Text style={styles.noDataText}>
                 No hay costaleros registrados
@@ -209,13 +207,16 @@ const styles = StyleSheet.create({
   listCard: {
     marginTop: 20,
   },
+  listContainer: {
+    maxHeight: 350, // Aumenta la altura de la lista de costaleros
+  },
+  scrollableList: {
+    maxHeight: 350, // Scroll dentro de la tarjeta si hay muchos costaleros
+  },
   listItem: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFFFFF", // No cambia de color al seleccionar
     borderRadius: 5,
     marginBottom: 5,
-  },
-  selectedItem: {
-    backgroundColor: "#EDE7F6",
   },
   counterCard: {
     marginTop: 20,

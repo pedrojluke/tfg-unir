@@ -7,7 +7,7 @@ import {
 } from "react-native-paper";
 import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import {
   useFocusEffect,
   useNavigation,
@@ -36,7 +36,8 @@ const EnsayosMenu = () => {
     try {
       setLoading(true);
       const ensayosRef = collection(db, `pasos/${pasoId}/ensayos`);
-      const ensayosSnap = await getDocs(ensayosRef);
+      const q = query(ensayosRef, orderBy("fecha", "asc")); // Ordenar por fecha ascendente
+      const ensayosSnap = await getDocs(q);
       const ensayosList = ensayosSnap.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
