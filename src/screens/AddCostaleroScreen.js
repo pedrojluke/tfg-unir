@@ -1,7 +1,7 @@
 import {
   ActivityIndicator,
   Button,
-  Card,
+  Text,
   TextInput,
   useTheme,
 } from "react-native-paper";
@@ -16,8 +16,8 @@ const AddCostaleroScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { pasoId, costaleroId } = route.params || {};
-  const theme = useTheme();
 
+  const theme = useTheme();
   const [nombre, setNombre] = useState("");
   const [apellidos, setApellidos] = useState("");
   const [telefono, setTelefono] = useState("");
@@ -52,7 +52,7 @@ const AddCostaleroScreen = () => {
   };
 
   const saveCostalero = async () => {
-    if (!nombre || !apellidos || !telefono || !altura) return;
+    if (!nombre || !apellidos || !telefono || !altura || loading) return;
     setLoading(true);
     try {
       if (isEditing) {
@@ -73,9 +73,10 @@ const AddCostaleroScreen = () => {
           rol: "costalero",
         });
       }
+
       navigation.goBack();
     } catch (error) {
-      console.error("Error al guardar el costalero: ", error);
+      console.error("Error saving costalero: ", error);
     } finally {
       setLoading(false);
     }
@@ -84,50 +85,50 @@ const AddCostaleroScreen = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Card>
-          <Card.Title
-            title={isEditing ? "Editar Costalero" : "Añadir Costalero"}
-          />
-          <Card.Content>
-            <TextInput
-              label="Nombre"
-              value={nombre}
-              onChangeText={setNombre}
-              mode="outlined"
-              style={styles.input}
-            />
-            <TextInput
-              label="Apellidos"
-              value={apellidos}
-              onChangeText={setApellidos}
-              mode="outlined"
-              style={styles.input}
-            />
-            <TextInput
-              label="Teléfono"
-              value={telefono}
-              onChangeText={setTelefono}
-              keyboardType="phone-pad"
-              mode="outlined"
-              style={styles.input}
-            />
-            <TextInput
-              label="Altura (cm)"
-              value={altura}
-              onChangeText={setAltura}
-              keyboardType="numeric"
-              mode="outlined"
-              style={styles.input}
-            />
-          </Card.Content>
-        </Card>
+        <Text style={styles.title}>
+          {isEditing ? "Editar Costalero" : "Añadir Costalero"}
+        </Text>
+
+        <TextInput
+          label="Nombre"
+          value={nombre}
+          onChangeText={setNombre}
+          style={styles.input}
+          mode="outlined"
+        />
+        <TextInput
+          label="Apellidos"
+          value={apellidos}
+          onChangeText={setApellidos}
+          style={styles.input}
+          mode="outlined"
+        />
+        <TextInput
+          label="Teléfono"
+          value={telefono}
+          onChangeText={setTelefono}
+          keyboardType="phone-pad"
+          style={styles.input}
+          mode="outlined"
+        />
+        <TextInput
+          label="Altura (cm)"
+          value={altura}
+          onChangeText={setAltura}
+          keyboardType="numeric"
+          style={styles.input}
+          mode="outlined"
+        />
       </ScrollView>
+
+      {/* Botón para guardar */}
       <View style={styles.fixedButtonContainer}>
         <Button
           mode="contained"
           onPress={saveCostalero}
           disabled={loading}
-          style={styles.fixedButton}
+          style={styles.saveButton}
+          labelStyle={styles.buttonText}
         >
           {loading ? (
             <ActivityIndicator animating={true} color="#ffffff" />
@@ -145,26 +146,40 @@ const AddCostaleroScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F7F7F7", // Fondo claro y neutro
   },
   scrollContainer: {
     padding: 20,
-    paddingBottom: 80, // Espacio para el botón fijo
+    paddingBottom: 80,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333333",
+    textAlign: "center",
+    marginBottom: 20,
+    textTransform: "uppercase",
   },
   input: {
-    marginBottom: 10,
+    marginBottom: 15,
+    backgroundColor: "#FFFFFF",
   },
   fixedButtonContainer: {
     position: "absolute",
-    bottom: 0,
+    bottom: 30,
     left: 0,
     right: 0,
-    backgroundColor: "white",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
+    alignItems: "center",
   },
-  fixedButton: {
-    backgroundColor: "#4B0082", // Morado cofrade
+  saveButton: {
+    backgroundColor: "#6200EE", // Morado elegante
+    width: "90%",
+    borderRadius: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
 });
 

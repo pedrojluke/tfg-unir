@@ -56,20 +56,16 @@ const AddEnsayo = () => {
 
   // Función para marcar/desmarcar la asistencia de un costalero
   const toggleAsistencia = (costaleroId) => {
-    console.log("Pulsando costalero numero: ", costaleroId);
-    setAsistencia((prevAsistencia) => {
-      if (prevAsistencia.includes(costaleroId)) {
-        return prevAsistencia.filter((id) => id !== costaleroId); // Quitar si ya estaba
-      } else {
-        return [...prevAsistencia, costaleroId]; // Agregar si no estaba
-      }
-    });
+    setAsistencia((prevAsistencia) =>
+      prevAsistencia.includes(costaleroId)
+        ? prevAsistencia.filter((id) => id !== costaleroId)
+        : [...prevAsistencia, costaleroId]
+    );
   };
 
   const saveEnsayo = async () => {
     try {
       setLoading(true);
-
       await addDoc(collection(db, `pasos/${pasoId}/ensayos`), {
         fecha: dayjs(fechaEnsayo).format("YYYY-MM-DD"), // Fecha en formato correcto
         costaleros: asistencia, // IDs de costaleros que asistieron
@@ -86,30 +82,28 @@ const AddEnsayo = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Card>
-          <Card.Title title="Nuevo Ensayo" />
-          <Card.Content>
-            <Button
-              mode="contained"
-              onPress={() => setShowDatePicker(true)}
-              style={styles.dateButton}
-            >
-              Seleccionar Fecha: {dayjs(fechaEnsayo).format("DD/MM/YYYY")}
-            </Button>
+        <Text style={styles.title}>Nuevo Ensayo</Text>
 
-            {showDatePicker && (
-              <DateTimePicker
-                value={fechaEnsayo}
-                mode="date"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  setShowDatePicker(false);
-                  if (selectedDate) setFechaEnsayo(selectedDate);
-                }}
-              />
-            )}
-          </Card.Content>
-        </Card>
+        <Button
+          mode="contained"
+          onPress={() => setShowDatePicker(true)}
+          style={styles.dateButton}
+          labelStyle={styles.buttonText}
+        >
+          Seleccionar Fecha: {dayjs(fechaEnsayo).format("DD/MM/YYYY")}
+        </Button>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={fechaEnsayo}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) setFechaEnsayo(selectedDate);
+            }}
+          />
+        )}
 
         <Card style={styles.listCard}>
           <Card.Title title="Asistencia de Costaleros" />
@@ -142,7 +136,11 @@ const AddEnsayo = () => {
                       }
                     />
                   )}
-                  onPress={() => toggleAsistencia(costalero.id)} // Mueve la lógica de selección aquí
+                  onPress={() => toggleAsistencia(costalero.id)}
+                  style={[
+                    styles.listItem,
+                    asistencia.includes(costalero.id) && styles.selectedItem,
+                  ]}
                 />
               ))
             ) : (
@@ -152,6 +150,7 @@ const AddEnsayo = () => {
             )}
           </Card.Content>
         </Card>
+
         {/* Contador de Costaleros Seleccionados */}
         <Card style={styles.counterCard}>
           <Card.Content>
@@ -168,6 +167,7 @@ const AddEnsayo = () => {
           onPress={saveEnsayo}
           disabled={loading}
           style={styles.fixedButton}
+          labelStyle={styles.buttonText}
         >
           {loading ? (
             <ActivityIndicator animating={true} color="#ffffff" />
@@ -183,30 +183,62 @@ const AddEnsayo = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F7F7F7",
   },
   scrollContainer: {
     padding: 20,
     paddingBottom: 80,
   },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333333",
+    textAlign: "center",
+    marginBottom: 20,
+    textTransform: "uppercase",
+  },
   dateButton: {
     marginBottom: 10,
-    backgroundColor: "#4B0082", // Morado cofrade
+    backgroundColor: "#6200EE",
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
   listCard: {
     marginTop: 20,
   },
+  listItem: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 5,
+    marginBottom: 5,
+  },
+  selectedItem: {
+    backgroundColor: "#EDE7F6",
+  },
+  counterCard: {
+    marginTop: 20,
+    backgroundColor: "#f5f5f5",
+    padding: 10,
+    alignItems: "center",
+  },
+  counterText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
   fixedButtonContainer: {
     position: "absolute",
-    bottom: 0,
+    bottom: 30,
     left: 0,
     right: 0,
-    backgroundColor: "white",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
+    alignItems: "center",
   },
   fixedButton: {
-    backgroundColor: "#4B0082",
+    backgroundColor: "#6200EE",
+    width: "90%",
+    borderRadius: 10,
   },
   noDataText: {
     textAlign: "center",

@@ -52,6 +52,7 @@ const MenuScreen = () => {
               key={paso.id}
               mode="contained"
               style={styles.pasoButton}
+              labelStyle={styles.pasoButtonText}
               onPress={() =>
                 navigation.navigate("PasoDetailMenu", {
                   pasoId: paso.id,
@@ -67,12 +68,13 @@ const MenuScreen = () => {
         )}
       </ScrollView>
 
-      {/* Botón de añadir paso con color diferente */}
+      {/* Botón de añadir paso con un color diferenciado */}
       <View style={styles.fixedButtonContainer}>
         <Button
           mode="contained"
           onPress={() => navigation.navigate("Añadir Paso")}
           style={styles.addButton}
+          labelStyle={styles.addButtonText}
         >
           Añadir Paso
         </Button>
@@ -84,38 +86,52 @@ const MenuScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F7F7F7", // Fondo claro y neutro
   },
   scrollContainer: {
     padding: 20,
-    paddingBottom: 80, // Espacio para el botón fijo
+    alignItems: "center",
   },
   title: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "bold",
+    color: "#333333",
     textAlign: "center",
     marginBottom: 20,
   },
   pasoButton: {
-    marginBottom: 10,
-    backgroundColor: "#4B0082", // Morado cofrade para los botones de los pasos
+    width: "90%",
+    marginBottom: 15,
+    backgroundColor: "#6200EE", // Morado elegante
+    borderRadius: 10,
+    elevation: 2, // Sombra ligera
+  },
+  pasoButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
   noDataText: {
     textAlign: "center",
-    color: "#000000",
+    color: "#666",
     marginTop: 20,
   },
   fixedButtonContainer: {
     position: "absolute",
-    bottom: 0,
+    bottom: 30,
     left: 0,
     right: 0,
-    backgroundColor: "white",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
+    alignItems: "center",
   },
   addButton: {
-    backgroundColor: "#008000", // Verde para diferenciar el botón de añadir paso
+    backgroundColor: "#B8860B", // Un tono diferenciado (rojo-anaranjado)
+    width: "90%",
+    borderRadius: 10,
+  },
+  addButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
 });
 

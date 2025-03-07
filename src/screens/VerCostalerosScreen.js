@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Button,
   Card,
   List,
   Text,
@@ -48,7 +49,7 @@ const VerCostalerosScreen = () => {
         ...doc.data(),
       }));
 
-      // Ordenar manualmente por altura en ascendente
+      // Ordenar por altura ascendente
       costalerosList = costalerosList.sort((a, b) => a.altura - b.altura);
 
       setCostaleros(costalerosList);
@@ -67,16 +68,18 @@ const VerCostalerosScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        label="Buscar Costalero"
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        mode="outlined"
-        style={styles.searchBar}
-      />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Card>
-          <Card.Title title="Lista de Costaleros" />
+        <Text style={styles.title}>Costaleros</Text>
+
+        <TextInput
+          label="Buscar Costalero"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          mode="outlined"
+          style={styles.searchBar}
+        />
+
+        <Card style={styles.listCard}>
           <Card.Content>
             {loading ? (
               <ActivityIndicator
@@ -107,6 +110,17 @@ const VerCostalerosScreen = () => {
           </Card.Content>
         </Card>
       </ScrollView>
+
+      <View style={styles.fixedButtonContainer}>
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate("Añadir Costalero", { pasoId })}
+          style={styles.addButton}
+          labelStyle={styles.buttonText}
+        >
+          Añadir Costalero
+        </Button>
+      </View>
     </View>
   );
 };
@@ -114,17 +128,50 @@ const VerCostalerosScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F7F7F7", // Fondo claro y neutro
   },
   scrollContainer: {
     padding: 20,
   },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333333",
+    textAlign: "center",
+    marginBottom: 20,
+    textTransform: "uppercase",
+  },
   searchBar: {
-    margin: 20,
+    marginBottom: 15,
+    backgroundColor: "#FFFFFF",
+  },
+  listCard: {
+    marginTop: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    elevation: 2, // Sombra ligera para resaltar la lista
   },
   noDataText: {
     textAlign: "center",
-    color: "#000000",
+    color: "#666",
     marginTop: 20,
+  },
+  fixedButtonContainer: {
+    position: "absolute",
+    bottom: 30,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+  },
+  addButton: {
+    backgroundColor: "#6200EE", // Morado elegante
+    width: "90%",
+    borderRadius: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
 });
 

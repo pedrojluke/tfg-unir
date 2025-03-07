@@ -1,7 +1,6 @@
 import {
   ActivityIndicator,
   Button,
-  Card,
   List,
   Text,
   useTheme,
@@ -27,7 +26,6 @@ const EnsayosMenu = () => {
   const [ensayos, setEnsayos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Recargar la lista de ensayos cada vez que la pantalla reciba el foco
   useFocusEffect(
     React.useCallback(() => {
       fetchEnsayos();
@@ -54,45 +52,41 @@ const EnsayosMenu = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Card>
-          <Card.Title title={`Ensayos de ${nombrePaso}`} />
-          <Card.Content>
-            <Button
-              mode="contained"
-              onPress={() => navigation.navigate("Crear Ensayo", { pasoId })}
-              style={styles.createButton}
-            >
-              Crear Ensayo
-            </Button>
-          </Card.Content>
-        </Card>
+        <Text style={styles.title}>Ensayos de {nombrePaso}</Text>
 
-        <Card style={styles.listCard}>
-          <Card.Title title="Lista de Ensayos" />
-          <Card.Content>
-            {loading ? (
-              <ActivityIndicator
-                animating={true}
-                size="large"
-                color={theme.colors.primary}
+        {/* Botón Crear Ensayo */}
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate("AddEnsayo", { pasoId })}
+          style={styles.createButton}
+          labelStyle={styles.buttonText}
+        >
+          Crear Ensayo
+        </Button>
+
+        {/* Lista de Ensayos */}
+        <View style={styles.listContainer}>
+          {loading ? (
+            <ActivityIndicator
+              animating={true}
+              size="large"
+              color={theme.colors.primary}
+            />
+          ) : ensayos.length > 0 ? (
+            ensayos.map((ensayo) => (
+              <List.Item
+                key={ensayo.id}
+                title={dayjs(ensayo.fecha).format("DD/MM/YYYY")} // Formato de fecha
+                onPress={() =>
+                  navigation.navigate("DetalleEnsayo", { ensayoId: ensayo.id })
+                }
+                style={styles.listItem}
               />
-            ) : ensayos.length > 0 ? (
-              ensayos.map((ensayo) => (
-                <List.Item
-                  key={ensayo.id}
-                  title={dayjs(ensayo.fecha).format("DD/MM/YYYY")} // Formato de fecha
-                  onPress={() =>
-                    navigation.navigate("DetalleEnsayo", {
-                      ensayoId: ensayo.id,
-                    })
-                  }
-                />
-              ))
-            ) : (
-              <Text style={styles.noDataText}>No hay ensayos registrados</Text>
-            )}
-          </Card.Content>
-        </Card>
+            ))
+          ) : (
+            <Text style={styles.noDataText}>No hay ensayos registrados</Text>
+          )}
+        </View>
       </ScrollView>
     </View>
   );
@@ -101,20 +95,46 @@ const EnsayosMenu = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F7F7F7", // Fondo claro y neutro
   },
   scrollContainer: {
     padding: 20,
+    paddingBottom: 80,
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333333",
+    textAlign: "center",
+    marginBottom: 20,
+    textTransform: "uppercase",
   },
   createButton: {
-    marginVertical: 10,
-    backgroundColor: "#4B0082", // Morado cofrade
+    width: "90%",
+    backgroundColor: "#6200EE", // Morado elegante
+    borderRadius: 10,
+    marginBottom: 20,
+    elevation: 2, // Sombra ligera
   },
-  listCard: {
-    marginTop: 20,
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+  listContainer: {
+    width: "100%",
+  },
+  listItem: {
+    backgroundColor: "#FFFFFF",
+    marginBottom: 10,
+    borderRadius: 10,
+    elevation: 2, // Sombra ligera
+    paddingHorizontal: 10,
   },
   noDataText: {
     textAlign: "center",
-    color: "#000000",
+    color: "#666",
     marginTop: 20,
   },
 });

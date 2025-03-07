@@ -1,9 +1,6 @@
 import {
   ActivityIndicator,
   Button,
-  Card,
-  Divider,
-  List,
   Text,
   TextInput,
   useTheme,
@@ -27,6 +24,7 @@ const AddPasoScreen = () => {
   const route = useRoute();
   const theme = useTheme();
   const pasoId = route.params?.pasoId || null;
+
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [trabajaderas, setTrabajaderas] = useState([]);
@@ -106,7 +104,7 @@ const AddPasoScreen = () => {
         });
       }
 
-      navigation.navigate("Menú Principal", { refresh: true });
+      navigation.goBack();
     } catch (error) {
       console.error("Error saving paso: ", error);
     } finally {
@@ -117,77 +115,70 @@ const AddPasoScreen = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Card>
-          <Card.Title title={isEditing ? "Editar Paso" : "Añadir Paso"} />
-          <Card.Content>
-            <TextInput
-              label="Nombre del Paso"
-              value={nombre}
-              onChangeText={setNombre}
-              style={{ marginBottom: 10 }}
-              mode="outlined"
-            />
-            <TextInput
-              label="Descripción"
-              value={descripcion}
-              onChangeText={setDescripcion}
-              multiline
-              style={{ marginBottom: 10 }}
-              mode="outlined"
-            />
-          </Card.Content>
-        </Card>
-        <Divider style={{ marginVertical: 20 }} />
-        <Card>
-          <Card.Title title="Trabajaderas" />
-          <Card.Content>
-            <TextInput
-              label="Altura"
-              value={altura}
-              onChangeText={setAltura}
-              keyboardType="numeric"
-              mode="outlined"
-              style={{ marginBottom: 10 }}
-            />
-            <TextInput
-              label="Huecos"
-              value={huecos}
-              onChangeText={setHuecos}
-              keyboardType="numeric"
-              mode="outlined"
-              style={{ marginBottom: 10 }}
-            />
-            <Button
-              mode="contained"
-              onPress={addTrabajadera}
-              style={{ marginBottom: 10 }}
-            >
-              Añadir Trabajadera
-            </Button>
-            {trabajaderas.length > 0 ? (
-              trabajaderas.map((trabajadera) => (
-                <List.Item
-                  key={trabajadera.id}
-                  title={`Altura: ${trabajadera.altura} cm - Huecos: ${trabajadera.huecos}`}
-                />
-              ))
-            ) : (
-              <Text
-                style={{ textAlign: "center", color: theme.colors.secondary }}
-              >
-                No hay trabajaderas añadidas
-              </Text>
-            )}
-          </Card.Content>
-        </Card>
+        <Text style={styles.title}>
+          {isEditing ? "Editar Paso" : "Añadir Paso"}
+        </Text>
+
+        <TextInput
+          label="Nombre del Paso"
+          value={nombre}
+          onChangeText={setNombre}
+          style={styles.input}
+          mode="outlined"
+        />
+        <TextInput
+          label="Descripción"
+          value={descripcion}
+          onChangeText={setDescripcion}
+          multiline
+          style={styles.input}
+          mode="outlined"
+        />
+
+        {/* Sección de trabajaderas */}
+        <Text style={styles.sectionTitle}>Trabajaderas</Text>
+        <TextInput
+          label="Altura"
+          value={altura}
+          onChangeText={setAltura}
+          keyboardType="numeric"
+          mode="outlined"
+          style={styles.input}
+        />
+        <TextInput
+          label="Huecos"
+          value={huecos}
+          onChangeText={setHuecos}
+          keyboardType="numeric"
+          mode="outlined"
+          style={styles.input}
+        />
+
+        <Button
+          mode="contained"
+          onPress={addTrabajadera}
+          style={styles.optionButton}
+          labelStyle={styles.buttonText}
+        >
+          Añadir Trabajadera
+        </Button>
+
+        {trabajaderas.length > 0 &&
+          trabajaderas.map((trabajadera) => (
+            <Text key={trabajadera.id} style={styles.trabajaderaText}>
+              Altura: {trabajadera.altura} cm - Huecos: {trabajadera.huecos}
+            </Text>
+          ))}
       </ScrollView>
 
+      {/* Botón para guardar */}
       <View style={styles.fixedButtonContainer}>
         <Button
           mode="contained"
           onPress={savePaso}
           disabled={loading}
-          style={styles.fixedButton}
+          style={styles.optionButton}
+          labelStyle={styles.buttonText}
         >
           {loading ? (
             <ActivityIndicator animating={true} color="#ffffff" />
@@ -205,23 +196,54 @@ const AddPasoScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F7F7F7", // Fondo claro y neutro
   },
   scrollContainer: {
     padding: 20,
-    paddingBottom: 80, // Espacio para el botón fijo
+    paddingBottom: 80,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333333",
+    textAlign: "center",
+    marginBottom: 20,
+    textTransform: "uppercase",
+  },
+  input: {
+    marginBottom: 15,
+    backgroundColor: "#FFFFFF",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 10,
+    marginTop: 20,
+  },
+  optionButton: {
+    width: "90%",
+    marginBottom: 15,
+    backgroundColor: "#6200EE", // Morado elegante, igual que en los otros menús
+    borderRadius: 10,
+    alignSelf: "center",
+    elevation: 2, // Sombra ligera
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
   fixedButtonContainer: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "white",
+    alignItems: "center",
+    backgroundColor: "#F7F7F7",
     padding: 10,
     borderTopWidth: 1,
     borderTopColor: "#ccc",
-  },
-  fixedButton: {
-    backgroundColor: "#4B0082", // Color morado cofrade
   },
 });
 

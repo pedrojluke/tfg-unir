@@ -1,4 +1,4 @@
-import { Button, Card, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
@@ -13,43 +13,46 @@ const PasoDetailMenu = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Card>
-          <Card.Title title={nombrePaso} titleStyle={styles.title} />
-          <Card.Content>
-            <Button
-              mode="contained"
-              onPress={() => navigation.navigate("Añadir Paso", { pasoId })}
-              style={styles.button}
-            >
-              Editar detalles del paso
-            </Button>
-            <Button
-              mode="contained"
-              onPress={() =>
-                navigation.navigate("Añadir Costalero", { pasoId })
-              }
-              style={styles.button}
-            >
-              Añadir Costalero
-            </Button>
-            <Button
-              mode="contained"
-              onPress={() => navigation.navigate("Ver Costaleros", { pasoId })}
-              style={styles.button}
-            >
-              Ver Costaleros
-            </Button>
-            <Button
-              mode="contained"
-              onPress={() =>
-                navigation.navigate("EnsayosMenu", { pasoId, nombrePaso })
-              }
-              style={styles.button}
-            >
-              Ensayos
-            </Button>
-          </Card.Content>
-        </Card>
+        <Text style={styles.title}>Paso: {nombrePaso}</Text>
+
+        {/* Botones de opciones */}
+        <Button
+          mode="contained"
+          style={styles.optionButton}
+          labelStyle={styles.buttonText}
+          onPress={() => navigation.navigate("Añadir Paso", { pasoId })}
+        >
+          Editar Detalles del Paso
+        </Button>
+
+        <Button
+          mode="contained"
+          style={styles.optionButton}
+          labelStyle={styles.buttonText}
+          onPress={() => navigation.navigate("Añadir Costalero", { pasoId })}
+        >
+          Añadir Costalero
+        </Button>
+
+        <Button
+          mode="contained"
+          style={styles.optionButton}
+          labelStyle={styles.buttonText}
+          onPress={() => navigation.navigate("Ver Costaleros", { pasoId })}
+        >
+          Ver Costaleros
+        </Button>
+
+        <Button
+          mode="contained"
+          style={styles.optionButton}
+          labelStyle={styles.buttonText}
+          onPress={() =>
+            navigation.navigate("EnsayosMenu", { pasoId, nombrePaso })
+          }
+        >
+          Ensayos
+        </Button>
       </ScrollView>
     </View>
   );
@@ -58,18 +61,31 @@ const PasoDetailMenu = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F7F7F7", // Fondo claro y neutro
   },
   scrollContainer: {
     padding: 20,
+    alignItems: "center",
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
+    color: "#333333",
     textAlign: "center",
+    marginBottom: 20,
+    textTransform: "uppercase",
   },
-  button: {
-    marginVertical: 10,
-    backgroundColor: "#4B0082", // Morado cofrade
+  optionButton: {
+    width: "90%",
+    marginBottom: 15,
+    backgroundColor: "#6200EE", // Morado elegante
+    borderRadius: 10,
+    elevation: 2, // Sombra ligera
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
 });
 
