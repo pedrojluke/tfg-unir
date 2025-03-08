@@ -1,12 +1,15 @@
 import {
   ActivityIndicator,
+  Button,
   Card,
   List,
+  Modal,
+  Portal,
   Text,
   useTheme,
 } from "react-native-paper";
-import { FlatList, StyleSheet, View } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import {
   collection,
   doc,
@@ -15,46 +18,42 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { useNavigation, useRoute } from "@react-navigation/native"; // 🔥 Asegurar que route está disponible
-
-import munkres from "munkres-js";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const AsignarCostalerosScreen = () => {
-  const route = useRoute(); // 🔥 Se obtiene route correctamente
+  const route = useRoute();
   const navigation = useNavigation();
+  const theme = useTheme();
+  const db = getFirestore();
 
-  // 🔥 Se manejan los parámetros de manera segura
-  const { pasoId, asistencia } = route?.params || {
-    pasoId: null,
-    asistencia: [],
-  };
+  const pasoId = route.params?.pasoId || null;
+  const ensayoId = route.params?.ensayoId || null;
+  const asistencia = route.params?.asistencia || [];
 
-  if (!pasoId || !asistencia) {
-    console.warn("⚠️ Error: pasoId o asistencia no recibidos");
+  if (!pasoId || !ensayoId || asistencia.length === 0) {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>
-          ❌ Error: No se han recibido los datos necesarios.
+          ❌ Error: Datos no recibidos correctamente.
         </Text>
       </View>
     );
   }
 
-  const theme = useTheme();
-  const flatListRef = useRef(null);
-
   const [costalerosDetalles, setCostalerosDetalles] = useState([]);
   const [trabajaderas, setTrabajaderas] = useState([]);
-  const [asignaciones, setAsignaciones] = useState([]);
+  const [asignaciones, setAsignaciones] = useState({});
   const [loading, setLoading] = useState(true);
+  const [selectedTrabajadera, setSelectedTrabajadera] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectingPosition, setSelectingPosition] = useState(null);
+  const [modalSelectVisible, setModalSelectVisible] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, [pasoId, asistencia]);
 
   const fetchData = async () => {
-    const db = getFirestore();
-
     try {
       const costalerosRef = collection(db, "usuarios");
       const costalerosQuery = query(
@@ -63,78 +62,72 @@ const AsignarCostalerosScreen = () => {
         where("pasoId", "==", pasoId)
       );
       const costalerosSnapshot = await getDocs(costalerosQuery);
-      let todosLosCostaleros = costalerosSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      let detallesArray = costalerosSnapshot.docs
+        .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .filter((costalero) => asistencia.includes(costalero.id))
+        .sort((a, b) => a.altura - b.altura);
 
-      let detallesArray = todosLosCostaleros.filter((costalero) =>
-        asistencia.includes(costalero.id)
-      );
-
-      detallesArray.sort((a, b) => a.altura - b.altura);
       setCostalerosDetalles(detallesArray);
 
-      const pasoDocRef = doc(db, "pasos", pasoId);
-      const trabajaderasRef = collection(pasoDocRef, "trabajaderas");
-      const trabajaderasSnapshot = await getDocs(trabajaderasRef);
-      let trabajaderasArray = trabajaderasSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      trabajaderasArray.sort(
-        (a, b) => a.orden - b.orden || a.altura - b.altura
+      const trabajaderasRef = collection(
+        doc(db, "pasos", pasoId),
+        "trabajaderas"
       );
+      const trabajaderasSnapshot = await getDocs(trabajaderasRef);
+      let trabajaderasArray = trabajaderasSnapshot.docs
+        .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => a.orden - b.orden || a.altura - b.altura);
+
       setTrabajaderas(trabajaderasArray);
 
-      const asignacionesArray = asignarCostalerosATrabajaderas(
-        detallesArray,
-        trabajaderasArray
-      );
-      setAsignaciones(asignacionesArray);
+      let asignacionesIniciales = {};
+      trabajaderasArray.forEach((t) => {
+        asignacionesIniciales[t.id] = Array(t.huecos).fill(null);
+      });
+      setAsignaciones(asignacionesIniciales);
     } catch (error) {
-      console.error("🔥 Error en la consulta a Firestore:", error.message);
+      console.error("🔥 Error en Firestore:", error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const asignarCostalerosATrabajaderas = (costaleros, trabajaderas) => {
-    let totalHuecos = trabajaderas.reduce((sum, t) => sum + t.huecos, 0);
+  const abrirModalTrabajadera = (trabajadera) => {
+    setSelectedTrabajadera(trabajadera);
+    setModalVisible(true);
+  };
 
-    if (costaleros.length === 0 || totalHuecos === 0) return [];
+  const abrirModalSeleccionCostalero = (posicion) => {
+    setSelectingPosition(posicion);
+    setModalSelectVisible(true);
+  };
 
-    let costMatrix = Array(costaleros.length)
-      .fill(null)
-      .map(() => Array(totalHuecos).fill(Infinity));
+  const asignarCostalero = (costalero) => {
+    if (!selectedTrabajadera) return;
 
-    let huecosArray = [];
-
-    trabajaderas.forEach((trabajadera, tIndex) => {
-      for (let i = 0; i < trabajadera.huecos; i++) {
-        huecosArray.push({ trabajadera, tIndex });
-      }
-    });
-
-    costaleros.forEach((costalero, cIndex) => {
-      huecosArray.forEach((hueco, hIndex) => {
-        if (costalero.altura <= hueco.trabajadera.altura) {
-          costMatrix[cIndex][hIndex] = Math.abs(
-            costalero.altura - hueco.trabajadera.altura
-          );
-        }
-      });
-    });
-
-    const assignment = munkres(costMatrix);
-
-    let asignaciones = assignment.map(([cIndex, hIndex]) => ({
-      costalero: costaleros[cIndex],
-      trabajadera: huecosArray[hIndex]?.trabajadera || null,
+    setAsignaciones((prev) => ({
+      ...prev,
+      [selectedTrabajadera.id]: prev[selectedTrabajadera.id].map((c, i) =>
+        i === selectingPosition ? costalero : c
+      ),
     }));
 
-    return asignaciones.filter((a) => a.trabajadera !== null);
+    setModalSelectVisible(false);
+  };
+
+  const costalerosDisponibles = () => {
+    if (!selectedTrabajadera) return [];
+
+    const alturaTrabajadera = selectedTrabajadera.altura;
+    const limiteInferior = alturaTrabajadera - 10;
+
+    const asignados = Object.values(asignaciones).flat();
+
+    return costalerosDetalles
+      .filter((c) => !asignados.some((a) => a?.id === c.id)) // Excluir ya asignados
+      .filter(
+        (c) => c.altura >= limiteInferior && c.altura <= alturaTrabajadera
+      ); // Excluir fuera del rango
   };
 
   return (
@@ -146,61 +139,118 @@ const AsignarCostalerosScreen = () => {
           color={theme.colors.primary}
         />
       ) : (
-        <FlatList
-          ref={flatListRef}
-          data={trabajaderas}
-          horizontal
-          pagingEnabled
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Card style={styles.trabajaderaCard}>
+        <ScrollView>
+          {trabajaderas.map((trabajadera) => (
+            <Card
+              key={trabajadera.id}
+              style={[
+                styles.trabajaderaCard,
+                { backgroundColor: theme.colors.primary },
+              ]}
+              onPress={() => abrirModalTrabajadera(trabajadera)}
+            >
               <Card.Title
-                title={`Trabajadera ${item.orden} (${item.altura} cm)`}
-                subtitle={`Huecos: ${item.huecos}`}
+                title={`Trabajadera ${trabajadera.orden} (${trabajadera.altura} cm)`}
+                subtitle={`Huecos: ${trabajadera.huecos}`}
+                titleStyle={{ color: "white" }}
+                subtitleStyle={{ color: "white" }}
               />
-              <Card.Content>
-                {asignaciones
-                  .filter((a) => a.trabajadera.id === item.id)
-                  .map(({ costalero }) => {
-                    const suplemento =
-                      costalero.altura < item.altura
-                        ? ` (+${item.altura - costalero.altura} cm)`
-                        : "";
-                    return (
-                      <List.Item
-                        key={costalero.id}
-                        title={`${costalero.nombre} ${costalero.apellidos} ${suplemento}`}
-                        description={`Altura: ${costalero.altura} cm`}
-                        left={(props) => (
-                          <List.Icon {...props} icon="human-male-board" />
-                        )}
-                      />
-                    );
-                  })}
-              </Card.Content>
             </Card>
-          )}
-          showsHorizontalScrollIndicator={false}
-        />
+          ))}
+
+          <Button
+            mode="contained"
+            style={styles.unassignedButton}
+            onPress={() => {}}
+          >
+            Ver Costaleros No Asignados
+          </Button>
+        </ScrollView>
       )}
+
+      <Portal>
+        <Modal
+          visible={modalVisible}
+          onDismiss={() => setModalVisible(false)}
+          contentContainerStyle={styles.modal}
+        >
+          <Text style={styles.modalTitle}>
+            Costaleros en Trabajadera {selectedTrabajadera?.orden}
+          </Text>
+          {selectedTrabajadera &&
+            asignaciones[selectedTrabajadera.id]?.map((c, i) => {
+              const suplemento =
+                c && c.altura < selectedTrabajadera.altura
+                  ? ` (+${selectedTrabajadera.altura - c.altura} cm)`
+                  : "";
+              return (
+                <List.Item
+                  key={i}
+                  title={
+                    c ? `${c.nombre} ${c.apellidos}${suplemento}` : "Vacío"
+                  }
+                  right={() => (
+                    <Button
+                      mode="text"
+                      onPress={() => abrirModalSeleccionCostalero(i)}
+                    >
+                      Asignar
+                    </Button>
+                  )}
+                />
+              );
+            })}
+        </Modal>
+
+        <Modal
+          visible={modalSelectVisible}
+          onDismiss={() => setModalSelectVisible(false)}
+          contentContainerStyle={styles.fullScreenModal}
+        >
+          <Text style={styles.modalTitle}>Seleccionar Costalero</Text>
+          <ScrollView contentContainerStyle={styles.scrollModal}>
+            {costalerosDisponibles().map((costalero) => {
+              const suplemento =
+                costalero.altura < selectedTrabajadera.altura
+                  ? ` (+${selectedTrabajadera.altura - costalero.altura} cm)`
+                  : "";
+              return (
+                <List.Item
+                  key={costalero.id}
+                  title={`${costalero.nombre} ${costalero.apellidos}${suplemento}`}
+                  onPress={() => asignarCostalero(costalero)}
+                />
+              );
+            })}
+          </ScrollView>
+        </Modal>
+      </Portal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
-  trabajaderaCard: { width: 300, marginHorizontal: 10 },
-  errorContainer: {
+  trabajaderaCard: {
+    marginBottom: 10,
+    borderRadius: 10,
+  },
+  modal: {
+    backgroundColor: "white",
+    padding: 20,
+    margin: 20,
+    borderRadius: 10,
+  },
+  fullScreenModal: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "white",
+    padding: 20,
   },
-  errorText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "red",
-    textAlign: "center",
+  scrollModal: {
+    flexGrow: 1,
   },
+  modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+  unassignedButton: { marginTop: 20, backgroundColor: "red" },
 });
 
 export default AsignarCostalerosScreen;

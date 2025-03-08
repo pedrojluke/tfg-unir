@@ -227,7 +227,11 @@ const AddEnsayo = () => {
             <Button
               mode="contained"
               onPress={() =>
-                navigation.navigate("AsignarCostaleros", { pasoId, asistencia })
+                navigation.navigate("AsignarCostaleros", {
+                  pasoId,
+                  ensayoId,
+                  asistencia,
+                })
               }
               style={styles.assignButton}
               labelStyle={styles.buttonText}
