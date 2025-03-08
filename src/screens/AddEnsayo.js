@@ -27,15 +27,15 @@ import { db } from "../service/firebase";
 const AddEnsayo = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { pasoId, ensayoId } = route.params || {}; // Puede ser undefined si es nuevo
+  const { pasoId, ensayoId } = route.params || {};
   const theme = useTheme();
 
   const [fechaEnsayo, setFechaEnsayo] = useState(new Date());
   const [costaleros, setCostaleros] = useState([]);
-  const [asistencia, setAsistencia] = useState([]); // Costaleros seleccionados
+  const [asistencia, setAsistencia] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // Modo edición
+  const [isEditing, setIsEditing] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
@@ -70,11 +70,11 @@ const AddEnsayo = () => {
 
   const toggleSelectAll = () => {
     if (selectAll) {
-      setAsistencia([]); // Si está activado, lo desactiva
+      setAsistencia([]);
     } else {
-      setAsistencia(costaleros.map((c) => c.id)); // Selecciona todos los costaleros
+      setAsistencia(costaleros.map((c) => c.id));
     }
-    setSelectAll(!selectAll); // Invierte el estado del checkbox
+    setSelectAll(!selectAll);
   };
 
   const loadEnsayoDetails = async () => {
@@ -87,7 +87,6 @@ const AddEnsayo = () => {
         const ensayoData = ensayoSnap.data();
         setFechaEnsayo(dayjs(ensayoData.fecha).toDate());
 
-        // Esperar a que se carguen los costaleros antes de marcar los seleccionados
         const costalerosRef = collection(db, "usuarios");
         const q = query(
           costalerosRef,
@@ -102,7 +101,6 @@ const AddEnsayo = () => {
 
         setCostaleros(costalerosList);
 
-        // Filtrar los costaleros que están en el ensayo y marcarlos
         const costalerosSeleccionados = costalerosList
           .filter((costalero) => ensayoData.costaleros.includes(costalero.id))
           .map((c) => c.id);
@@ -153,7 +151,7 @@ const AddEnsayo = () => {
 
   return (
     <View style={styles.container}>
-      {loading ? ( // 🔴 Muestra el spinner si estamos cargando datos en modo edición
+      {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text style={styles.loadingText}>Cargando ensayo...</Text>
@@ -239,7 +237,6 @@ const AddEnsayo = () => {
             </Card.Content>
           </Card>
 
-          {/* Contador de Costaleros Seleccionados */}
           <View style={styles.counterContainer}>
             <Card style={styles.counterCard}>
               <Card.Content>
@@ -249,7 +246,6 @@ const AddEnsayo = () => {
               </Card.Content>
             </Card>
 
-            {/* Botón Asignar Costaleros */}
             <Button
               mode="contained"
               onPress={() =>
@@ -272,7 +268,6 @@ const AddEnsayo = () => {
         </ScrollView>
       )}
 
-      {/* Botón Guardar/Actualizar Ensayo */}
       {!loading && (
         <View style={styles.fixedButtonContainer}>
           <Button
@@ -315,7 +310,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 20,
-    paddingBottom: 100, // Ajustado para evitar solapamiento con el botón de guardar
+    paddingBottom: 100,
   },
   title: {
     fontSize: 22,
@@ -341,7 +336,7 @@ const styles = StyleSheet.create({
     maxHeight: 350,
   },
   counterContainer: {
-    marginTop: 30, // 🔴 Espacio entre la lista de asistencia y el contador
+    marginTop: 30,
     alignItems: "center",
   },
   counterCard: {
@@ -357,15 +352,15 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   assignButton: {
-    backgroundColor: "#03A9F4", // Azul para diferenciarlo del botón de guardar
+    backgroundColor: "#03A9F4",
     width: "90%",
     borderRadius: 10,
     alignSelf: "center",
-    marginTop: 10, // 🔴 Espacio entre el contador y el botón "Asignar Costaleros"
+    marginTop: 10,
   },
   fixedButtonContainer: {
     position: "absolute",
-    bottom: 20, // 🔴 Asegura que está completamente al fondo
+    bottom: 20,
     left: 0,
     right: 0,
     alignItems: "center",
