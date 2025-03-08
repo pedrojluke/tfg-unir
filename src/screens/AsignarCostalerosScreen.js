@@ -51,6 +51,8 @@ const AsignarCostalerosScreen = () => {
   const [selectingPosition, setSelectingPosition] = useState(null);
   const [modalSelectVisible, setModalSelectVisible] = useState(false);
   const [loadingAssign, setLoadingAssign] = useState(false);
+  const [modalNoAsignadosVisible, setModalNoAsignadosVisible] = useState(false);
+  const [costalerosNoAsignados, setCostalerosNoAsignados] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -93,6 +95,20 @@ const AsignarCostalerosScreen = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const verCostalerosNoAsignados = () => {
+    const asignados = new Set(
+      Object.values(asignaciones)
+        .flat()
+        .filter((c) => c !== null) // Solo tomamos los que están asignados
+        .map((c) => c.id) // Extraemos solo los IDs
+    );
+
+    const noAsignados = costalerosDetalles.filter((c) => !asignados.has(c.id));
+
+    setCostalerosNoAsignados(noAsignados);
+    setModalNoAsignadosVisible(true);
   };
 
   const abrirModalTrabajadera = (trabajadera) => {
@@ -222,7 +238,7 @@ const AsignarCostalerosScreen = () => {
           <Button
             mode="contained"
             style={styles.unassignedButton}
-            onPress={() => {}}
+            onPress={verCostalerosNoAsignados}
           >
             Ver Costaleros No Asignados
           </Button>
@@ -237,6 +253,30 @@ const AsignarCostalerosScreen = () => {
           </Button>
         </ScrollView>
       )}
+      <Portal>
+        <Modal
+          visible={modalNoAsignadosVisible}
+          onDismiss={() => setModalNoAsignadosVisible(false)}
+          contentContainerStyle={[styles.modal, { backgroundColor: "white" }]}
+        >
+          <Text style={styles.modalTitle}>Costaleros No Asignados</Text>
+          {costalerosNoAsignados.length > 0 ? (
+            <ScrollView>
+              {costalerosNoAsignados.map((costalero) => (
+                <List.Item
+                  key={costalero.id}
+                  title={`${costalero.nombre} ${costalero.apellidos}`}
+                  description={`Altura: ${costalero.altura} cm`}
+                />
+              ))}
+            </ScrollView>
+          ) : (
+            <Text style={{ textAlign: "center", margin: 10 }}>
+              ✅ Todos los costaleros han sido asignados.
+            </Text>
+          )}
+        </Modal>
+      </Portal>
       <Portal>
         <Modal
           visible={modalVisible}
