@@ -295,29 +295,34 @@ const AsignarCostalerosScreen = () => {
               </Card>
             );
           })}
-          <Button
-            mode="contained"
-            style={styles.unassignedButton}
-            onPress={verCostalerosNoAsignados}
-          >
-            Ver Costaleros No Asignados
-          </Button>
+          <View style={styles.fixedButtonContainer}>
+            <Button
+              mode="contained"
+              style={styles.noAsignados}
+              labelStyle={styles.buttonText}
+              onPress={verCostalerosNoAsignados}
+            >
+              Ver Costaleros No Asignados
+            </Button>
 
-          <Button
-            mode="contained"
-            style={styles.assignButton}
-            onPress={asignarAutomaticamente}
-            disabled={loadingAssign}
-          >
-            Asignar Automáticamente
-          </Button>
-          <Button
+            <Button
+              mode="contained"
+              style={styles.automaticamente}
+              labelStyle={styles.buttonText}
+              onPress={asignarAutomaticamente}
+              disabled={loadingAssign}
+            >
+              Asignar Automáticamente
+            </Button>
+          </View>
+
+          {/* <Button
             mode="contained"
             style={styles.saveButton}
             onPress={guardarAsignacionesEnFirebase}
           >
             Guardar Asignaciones
-          </Button>
+          </Button> */}
         </ScrollView>
       )}
       <Portal>
@@ -431,10 +436,29 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: "90%",
   },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
   trabajaderaCard: {
     marginBottom: 10,
     borderRadius: 10,
     backgroundColor: "#6200EE",
+  },
+  noAsignados: {
+    backgroundColor: "red",
+    width: "90%",
+    borderRadius: 10,
+    marginBottom: 20,
+    marginTop: 30,
+    alignSelf: "center",
+  },
+  automaticamente: {
+    backgroundColor: "#03A9F4",
+    width: "90%",
+    borderRadius: 10,
+    alignSelf: "center",
   },
   modal: {
     backgroundColor: "white",
@@ -450,7 +474,12 @@ const styles = StyleSheet.create({
   scrollModal: {
     flexGrow: 1,
   },
-  modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginLeft: 20,
+  },
   unassignedButton: { marginTop: 20, backgroundColor: "red" },
 
   unassignedButton: {
