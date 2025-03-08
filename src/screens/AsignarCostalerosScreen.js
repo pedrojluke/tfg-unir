@@ -50,6 +50,7 @@ const AsignarCostalerosScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectingPosition, setSelectingPosition] = useState(null);
   const [modalSelectVisible, setModalSelectVisible] = useState(false);
+  const [loadingAssign, setLoadingAssign] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -133,47 +134,53 @@ const AsignarCostalerosScreen = () => {
   };
 
   const asignarAutomaticamente = () => {
-    let noAsignados = costalerosDetalles.filter(
-      (c) =>
-        !Object.values(asignaciones)
-          .flat()
-          .some((a) => a?.id === c.id)
-    );
-
-    let costoMatriz = [];
-    let huecosArray = [];
-
-    trabajaderas.forEach((t) => {
-      for (let i = 0; i < t.huecos; i++) {
-        if (!asignaciones[t.id][i]) {
-          huecosArray.push({ trabajadera: t, posicion: i });
-        }
-      }
-    });
-
-    noAsignados.forEach((c) => {
-      let fila = huecosArray.map((h) =>
-        c.altura <= h.trabajadera.altura
-          ? Math.abs(c.altura - h.trabajadera.altura)
-          : Infinity
+    setLoadingAssign(true);
+    try {
+      let noAsignados = costalerosDetalles.filter(
+        (c) =>
+          !Object.values(asignaciones)
+            .flat()
+            .some((a) => a?.id === c.id)
       );
-      costoMatriz.push(fila);
-    });
 
-    const asignacionesMunkres = munkres(costoMatriz);
+      let costoMatriz = [];
+      let huecosArray = [];
 
-    let nuevasAsignaciones = { ...asignaciones };
+      trabajaderas.forEach((t) => {
+        for (let i = 0; i < t.huecos; i++) {
+          if (!asignaciones[t.id][i]) {
+            huecosArray.push({ trabajadera: t, posicion: i });
+          }
+        }
+      });
 
-    asignacionesMunkres.forEach(([costaleroIndex, huecoIndex]) => {
-      let costalero = noAsignados[costaleroIndex];
-      let hueco = huecosArray[huecoIndex];
+      noAsignados.forEach((c) => {
+        let fila = huecosArray.map((h) =>
+          c.altura <= h.trabajadera.altura
+            ? Math.abs(c.altura - h.trabajadera.altura)
+            : Infinity
+        );
+        costoMatriz.push(fila);
+      });
 
-      if (costalero && hueco) {
-        nuevasAsignaciones[hueco.trabajadera.id][hueco.posicion] = costalero;
-      }
-    });
+      const asignacionesMunkres = munkres(costoMatriz);
 
-    setAsignaciones(nuevasAsignaciones);
+      let nuevasAsignaciones = { ...asignaciones };
+
+      asignacionesMunkres.forEach(([costaleroIndex, huecoIndex]) => {
+        let costalero = noAsignados[costaleroIndex];
+        let hueco = huecosArray[huecoIndex];
+
+        if (costalero && hueco) {
+          nuevasAsignaciones[hueco.trabajadera.id][hueco.posicion] = costalero;
+        }
+      });
+
+      setAsignaciones(nuevasAsignaciones);
+    } catch {
+    } finally {
+      setLoadingAssign(false);
+    }
   };
 
   return (
@@ -189,10 +196,7 @@ const AsignarCostalerosScreen = () => {
           {trabajaderas.map((trabajadera) => (
             <Card
               key={trabajadera.id}
-              style={[
-                styles.trabajaderaCard,
-                { backgroundColor: theme.colors.primary },
-              ]}
+              style={[styles.trabajaderaCard]}
               onPress={() => abrirModalTrabajadera(trabajadera)}
             >
               <Card.Title
@@ -215,6 +219,7 @@ const AsignarCostalerosScreen = () => {
             mode="contained"
             style={styles.assignButton}
             onPress={asignarAutomaticamente}
+            disabled={loadingAssign}
           >
             Asignar Automáticamente
           </Button>
@@ -290,23 +295,24 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 10,
     backgroundColor: "#6200EE",
-    modal: {
-      backgroundColor: "white",
-      padding: 20,
-      margin: 20,
-      borderRadius: 10,
-    },
-    fullScreenModal: {
-      flex: 1,
-      backgroundColor: "white",
-      padding: 20,
-    },
-    scrollModal: {
-      flexGrow: 1,
-    },
-    modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-    unassignedButton: { marginTop: 20, backgroundColor: "red" },
   },
+  modal: {
+    backgroundColor: "white",
+    padding: 20,
+    margin: 20,
+    borderRadius: 10,
+  },
+  fullScreenModal: {
+    flex: 1,
+    backgroundColor: "white",
+    padding: 20,
+  },
+  scrollModal: {
+    flexGrow: 1,
+  },
+  modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+  unassignedButton: { marginTop: 20, backgroundColor: "red" },
+
   unassignedButton: {
     marginTop: 20,
     backgroundColor: "red",
