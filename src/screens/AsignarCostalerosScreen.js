@@ -304,6 +304,10 @@ const styles = StyleSheet.create({
     modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
     unassignedButton: { marginTop: 20, backgroundColor: "red" },
   },
+  unassignedButton: {
+    marginTop: 20,
+    backgroundColor: "red",
+  },
   assignButton: {
     marginTop: 20,
     backgroundColor: "#03A9F4",
