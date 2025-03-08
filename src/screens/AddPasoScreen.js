@@ -1,15 +1,17 @@
 import {
   ActivityIndicator,
   Button,
+  Card,
   Text,
   TextInput,
   useTheme,
 } from "react-native-paper";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -17,6 +19,7 @@ import {
 } from "firebase/firestore";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
+import { Ionicons } from "@expo/vector-icons";
 import { db } from "../service/firebase";
 
 const AddPasoScreen = () => {
@@ -29,8 +32,10 @@ const AddPasoScreen = () => {
   const [descripcion, setDescripcion] = useState("");
   const [trabajaderas, setTrabajaderas] = useState([]);
   const [altura, setAltura] = useState("");
+  const [orden, setOrden] = useState("");
   const [huecos, setHuecos] = useState("");
   const [loading, setLoading] = useState(false);
+  const [addingTrabajadera, setAddingTrabajadera] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -66,20 +71,40 @@ const AddPasoScreen = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      setTrabajaderas(trabajaderasList);
+      // Ordenar por orden de menor a mayor
+      setTrabajaderas(trabajaderasList.sort((a, b) => a.orden - b.orden));
     } catch (error) {
       console.error("Error loading trabajaderas: ", error);
     }
   };
 
-  const addTrabajadera = () => {
-    if (!altura || !huecos) return;
-    setTrabajaderas([
-      ...trabajaderas,
-      { id: Date.now(), altura: parseInt(altura), huecos: parseInt(huecos) },
-    ]);
+  const addTrabajadera = async () => {
+    if (!altura || !huecos || !orden) return;
+
+    setAddingTrabajadera(true);
+
+    const newTrabajadera = {
+      id: Date.now(),
+      altura: parseInt(altura),
+      orden: parseInt(orden),
+      huecos: parseInt(huecos),
+    };
+
+    setTrabajaderas(
+      [...trabajaderas, newTrabajadera].sort((a, b) => a.orden - b.orden)
+    );
+
     setAltura("");
+    setOrden("");
     setHuecos("");
+
+    setAddingTrabajadera(false);
+  };
+
+  const removeTrabajadera = (id) => {
+    setTrabajaderas(
+      trabajaderas.filter((trabajadera) => trabajadera.id !== id)
+    );
   };
 
   const savePaso = async () => {
@@ -90,6 +115,15 @@ const AddPasoScreen = () => {
       if (isEditing) {
         pasoRef = doc(db, "pasos", pasoId);
         await updateDoc(pasoRef, { nombre, descripcion });
+
+        // 🔥 Eliminar todas las trabajaderas antes de guardar las nuevas
+        const trabajaderasRef = collection(db, `pasos/${pasoId}/trabajaderas`);
+        const trabajaderasSnap = await getDocs(trabajaderasRef);
+        for (const docSnapshot of trabajaderasSnap.docs) {
+          await deleteDoc(
+            doc(db, `pasos/${pasoId}/trabajaderas`, docSnapshot.id)
+          );
+        }
       } else {
         pasoRef = await addDoc(collection(db, "pasos"), {
           nombre,
@@ -97,9 +131,11 @@ const AddPasoScreen = () => {
         });
       }
 
+      // 🔄 Guardar nuevamente las trabajaderas en orden
       for (const trabajadera of trabajaderas) {
         await addDoc(collection(db, `pasos/${pasoRef.id}/trabajaderas`), {
           altura: trabajadera.altura,
+          orden: trabajadera.orden,
           huecos: trabajadera.huecos,
         });
       }
@@ -135,16 +171,27 @@ const AddPasoScreen = () => {
           mode="outlined"
         />
 
-        {/* Sección de trabajaderas */}
         <Text style={styles.sectionTitle}>Trabajaderas</Text>
-        <TextInput
-          label="Altura"
-          value={altura}
-          onChangeText={setAltura}
-          keyboardType="numeric"
-          mode="outlined"
-          style={styles.input}
-        />
+
+        <View style={styles.row}>
+          <TextInput
+            label="Altura"
+            value={altura}
+            onChangeText={setAltura}
+            keyboardType="numeric"
+            mode="outlined"
+            style={[styles.input, styles.halfInput]}
+          />
+          <TextInput
+            label="Orden"
+            value={orden}
+            onChangeText={setOrden}
+            keyboardType="numeric"
+            mode="outlined"
+            style={[styles.input, styles.halfInput]}
+          />
+        </View>
+
         <TextInput
           label="Huecos"
           value={huecos}
@@ -157,27 +204,41 @@ const AddPasoScreen = () => {
         <Button
           mode="contained"
           onPress={addTrabajadera}
-          style={styles.optionButton}
+          style={styles.createButton}
           labelStyle={styles.buttonText}
+          disabled={addingTrabajadera}
         >
-          Añadir Trabajadera
+          {addingTrabajadera ? (
+            <ActivityIndicator animating={true} color="#ffffff" />
+          ) : (
+            "Añadir Trabajadera"
+          )}
         </Button>
 
         {trabajaderas.length > 0 &&
           trabajaderas.map((trabajadera) => (
-            <Text key={trabajadera.id} style={styles.trabajaderaText}>
-              Altura: {trabajadera.altura} cm - Huecos: {trabajadera.huecos}
-            </Text>
+            <Card key={trabajadera.id} style={styles.trabajaderaCard}>
+              <Card.Content style={styles.trabajaderaRow}>
+                <Text style={styles.trabajaderaText}>
+                  Orden: {trabajadera.orden} | Altura: {trabajadera.altura} cm |
+                  Huecos: {trabajadera.huecos}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => removeTrabajadera(trabajadera.id)}
+                >
+                  <Ionicons name="trash" size={24} color="red" />
+                </TouchableOpacity>
+              </Card.Content>
+            </Card>
           ))}
       </ScrollView>
 
-      {/* Botón para guardar */}
       <View style={styles.fixedButtonContainer}>
         <Button
           mode="contained"
           onPress={savePaso}
           disabled={loading}
-          style={styles.optionButton}
+          style={styles.createButton}
           labelStyle={styles.buttonText}
         >
           {loading ? (
@@ -196,7 +257,7 @@ const AddPasoScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F7F7", // Fondo claro y neutro
+    backgroundColor: "#F7F7F7",
   },
   scrollContainer: {
     padding: 20,
@@ -205,7 +266,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#333333",
     textAlign: "center",
     marginBottom: 20,
     textTransform: "uppercase",
@@ -214,36 +274,26 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: "#FFFFFF",
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-    marginTop: 20,
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
-  optionButton: {
+  halfInput: {
+    flex: 1,
+    marginRight: 10,
+  },
+  createButton: {
     width: "90%",
-    marginBottom: 15,
-    backgroundColor: "#6200EE", // Morado elegante, igual que en los otros menús
+    backgroundColor: "#6200EE",
     borderRadius: 10,
+    marginBottom: 20,
+    elevation: 2,
     alignSelf: "center",
-    elevation: 2, // Sombra ligera
   },
   buttonText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#FFFFFF",
-  },
-  fixedButtonContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    alignItems: "center",
-    backgroundColor: "#F7F7F7",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
   },
 });
 

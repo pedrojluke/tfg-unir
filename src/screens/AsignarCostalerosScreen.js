@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import {
   collection,
+  doc,
   getDocs,
   getFirestore,
   query,
@@ -11,6 +12,7 @@ import {
 const AsignarCostalerosScreen = ({ route }) => {
   const { pasoId, asistencia } = route.params;
   const [costalerosDetalles, setCostalerosDetalles] = useState([]);
+  const [trabajaderas, setTrabajaderas] = useState([]);
 
   useEffect(() => {
     console.log("🚀 useEffect ejecutado!");
@@ -24,43 +26,56 @@ const AsignarCostalerosScreen = ({ route }) => {
       return;
     }
 
-    const fetchCostalerosDetalles = async () => {
+    const fetchData = async () => {
       const db = getFirestore();
-      const costalerosRef = collection(db, "usuarios");
-      const q = query(
-        costalerosRef,
-        where("rol", "==", "costalero"),
-        where("pasoId", "==", pasoId)
-      );
 
       try {
-        const querySnapshot = await getDocs(q);
-        const todosLosCostaleros = querySnapshot.docs.map((doc) => ({
+        // 🔍 Recuperar costaleros del paso con asistencia
+        const costalerosRef = collection(db, "usuarios");
+        const costalerosQuery = query(
+          costalerosRef,
+          where("rol", "==", "costalero"),
+          where("pasoId", "==", pasoId)
+        );
+        const costalerosSnapshot = await getDocs(costalerosQuery);
+        const todosLosCostaleros = costalerosSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
         console.log("📋 Costaleros en Firestore:", todosLosCostaleros);
-        console.log("📌 Asistencia recibida:", asistencia);
 
-        // 🔍 Verificar si los IDs coinciden en formato
+        // Filtrar los costaleros según asistencia
         const detallesArray = todosLosCostaleros.filter((costalero) =>
           asistencia.includes(costalero.id)
         );
 
         console.log("✅ Costaleros filtrados por asistencia:", detallesArray);
         setCostalerosDetalles(detallesArray);
+
+        // 🔍 Recuperar trabajaderas desde la subcolección pasos/{pasoId}/trabajaderas
+        const pasoDocRef = doc(db, "pasos", pasoId);
+        const trabajaderasRef = collection(pasoDocRef, "trabajaderas");
+        const trabajaderasSnapshot = await getDocs(trabajaderasRef);
+        const trabajaderasArray = trabajaderasSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        console.log("📋 Trabajaderas en Firestore:", trabajaderasArray);
+        setTrabajaderas(trabajaderasArray);
       } catch (error) {
         console.error("🔥 Error en la consulta a Firestore:", error.message);
       }
     };
 
-    fetchCostalerosDetalles();
+    fetchData();
   }, [pasoId, asistencia]);
 
   return (
     <View>
       <Text>Asignación de Costaleros</Text>
+
       {costalerosDetalles.length > 0 ? (
         costalerosDetalles.map((costalero) => (
           <Text key={costalero.id}>
@@ -69,6 +84,19 @@ const AsignarCostalerosScreen = ({ route }) => {
         ))
       ) : (
         <Text>⚠️ No hay costaleros disponibles</Text>
+      )}
+
+      <Text>---------------------</Text>
+      <Text>Trabajaderas del Paso</Text>
+
+      {trabajaderas.length > 0 ? (
+        trabajaderas.map((trabajadera) => (
+          <Text key={trabajadera.id}>
+            Fila {trabajadera.fila} - Altura: {trabajadera.altura} cm
+          </Text>
+        ))
+      ) : (
+        <Text>⚠️ No hay trabajaderas disponibles</Text>
       )}
     </View>
   );
