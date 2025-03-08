@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
+  addDoc,
   collection,
   doc,
   getDocs,
@@ -94,6 +95,46 @@ const AsignarCostalerosScreen = () => {
       console.error("🔥 Error en Firestore:", error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const guardarAsignacionesEnFirebase = async () => {
+    try {
+      if (!pasoId || !ensayoId) {
+        console.error("❌ Error: No hay pasoId o ensayoId");
+        return;
+      }
+
+      // 🔹 Recorremos cada trabajadera y sus posiciones
+      for (const trabajadera of trabajaderas) {
+        const trabajaderaId = trabajadera.id;
+
+        asignaciones[trabajaderaId].forEach(async (costalero, index) => {
+          if (costalero) {
+            const taco = Math.max(0, trabajadera.altura - costalero.altura);
+
+            const asignacionData = {
+              costaleroId: costalero.id,
+              trabajaderaId: trabajaderaId,
+              taco: taco,
+              posicion: index, // Arriba en la lista es N, abajo es 0
+            };
+
+            // 🔹 Guardamos la asignación en Firestore
+            const asignacionesRef = collection(
+              db,
+              `pasos/${pasoId}/ensayos/${ensayoId}/asignaciones`
+            );
+            await addDoc(asignacionesRef, asignacionData);
+          }
+        });
+      }
+
+      console.log("✅ Asignaciones guardadas correctamente");
+      alert("Asignaciones guardadas correctamente");
+    } catch (error) {
+      console.error("🔥 Error al guardar asignaciones:", error);
+      alert("❌ Hubo un error al guardar las asignaciones.");
     }
   };
 
@@ -270,6 +311,13 @@ const AsignarCostalerosScreen = () => {
           >
             Asignar Automáticamente
           </Button>
+          <Button
+            mode="contained"
+            style={styles.saveButton}
+            onPress={guardarAsignacionesEnFirebase}
+          >
+            Guardar Asignaciones
+          </Button>
         </ScrollView>
       )}
       <Portal>
@@ -375,6 +423,14 @@ const AsignarCostalerosScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
+  saveButton: {
+    marginTop: 20,
+    backgroundColor: "#4CAF50", // Verde para indicar acción de guardado
+    padding: 10,
+    borderRadius: 8,
+    alignSelf: "center",
+    width: "90%",
+  },
   trabajaderaCard: {
     marginBottom: 10,
     borderRadius: 10,
