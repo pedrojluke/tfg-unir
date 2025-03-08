@@ -5,7 +5,7 @@ import AddPasoScreen from "../screens/AddPasoScreen";
 import AsignarCostalerosScreen from "../screens/AsignarCostalerosScreen";
 import CostaleroScreen from "../costalero/costaleroScreen";
 import EnsayoMenuScreen from "../ensayoMenu/ensayoMenuScreen";
-import MenuScreen from "../screens/MenuScreen";
+import MainScreen from "../main/mainScreen";
 import PasoDetailMenuScreen from "../screens/PasoDetailMenu";
 import React from "react";
 import VerCostalerosScreen from "../screens/VerCostalerosScreen";
@@ -15,7 +15,7 @@ const Stack = createStackNavigator();
 
 const StackNavigator = () => (
   <Stack.Navigator>
-    <Stack.Screen name={TEXTS.SCREENS.MENU_PRINCIPAL} component={MenuScreen} />
+    <Stack.Screen name={TEXTS.SCREENS.MENU_PRINCIPAL} component={MainScreen} />
     <Stack.Screen name={TEXTS.SCREENS.ADD_PASO} component={AddPasoScreen} />
     <Stack.Screen
       name={TEXTS.SCREENS.ADD_COSTALERO}
