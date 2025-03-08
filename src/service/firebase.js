@@ -19,9 +19,12 @@ const collections = {
   usuarios: {
     name: "usuarios",
     rol: "costalero",
+    rolField: "rol",
   },
   pasos: {
     name: "pasos",
+    id: "pasoId",
+    equals: "==",
   },
   ensayos: {
     name: "ensayos",

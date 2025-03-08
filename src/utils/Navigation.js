@@ -3,12 +3,12 @@ import * as TEXTS from "./Texts";
 import AddEnsayoScreen from "../screens/AddEnsayo";
 import AddPasoScreen from "../screens/AddPasoScreen";
 import AsignarCostalerosScreen from "../screens/AsignarCostalerosScreen";
+import CostaleroDetailScreen from "../costaleroDetail/costaleroDetailScreen";
 import CostaleroScreen from "../costalero/costaleroScreen";
 import EnsayoMenuScreen from "../ensayoMenu/ensayoMenuScreen";
 import MainScreen from "../main/mainScreen";
 import PasoDetailMenuScreen from "../screens/PasoDetailMenu";
 import React from "react";
-import VerCostalerosScreen from "../screens/VerCostalerosScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 
 const Stack = createStackNavigator();
@@ -23,7 +23,7 @@ const StackNavigator = () => (
     />
     <Stack.Screen
       name={TEXTS.SCREENS.VER_COSTALEROS}
-      component={VerCostalerosScreen}
+      component={CostaleroDetailScreen}
     />
     <Stack.Screen
       name={TEXTS.SCREENS.PASO_DETAILS}
