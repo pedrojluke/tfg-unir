@@ -36,6 +36,7 @@ const AddEnsayo = () => {
   const [loading, setLoading] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Modo edición
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     fetchCostaleros();
@@ -65,6 +66,15 @@ const AddEnsayo = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectAll) {
+      setAsistencia([]); // Si está activado, lo desactiva
+    } else {
+      setAsistencia(costaleros.map((c) => c.id)); // Selecciona todos los costaleros
+    }
+    setSelectAll(!selectAll); // Invierte el estado del checkbox
   };
 
   const loadEnsayoDetails = async () => {
@@ -178,6 +188,22 @@ const AddEnsayo = () => {
           <Card style={styles.listCard}>
             <Card.Title title="Asistencia de Costaleros" />
             <Card.Content style={styles.listContainer}>
+              <List.Item
+                title="Seleccionar Todos"
+                left={(props) => <List.Icon {...props} icon="select-all" />}
+                right={(props) => (
+                  <List.Icon
+                    {...props}
+                    icon={
+                      selectAll
+                        ? "check-circle"
+                        : "checkbox-blank-circle-outline"
+                    }
+                    color={selectAll ? theme.colors.primary : "#ccc"}
+                  />
+                )}
+                onPress={toggleSelectAll}
+              />
               {costaleros.length > 0 ? (
                 <ScrollView style={styles.scrollableList}>
                   {costaleros.map((costalero) => (
