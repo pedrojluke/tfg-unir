@@ -13,7 +13,21 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 
-export { db };
+const collections = {
+  usuarios: {
+    name: "usuarios",
+    rol: "costalero",
+  },
+  pasos: {
+    name: "pasos",
+  },
+  ensayos: {
+    name: "ensayos",
+    fechaFilter: "fecha",
+    fechaOrder: "asc",
+  },
+};
+
+export { collections, db };

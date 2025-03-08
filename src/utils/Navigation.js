@@ -1,39 +1,41 @@
-import * as TEXTS from "../utils/Texts";
+import * as TEXTS from "./Texts";
 
-import AddCostaleroScreen from "../screens/AddCostaleroScreen";
-import CostalerosScreen from "../screens/CostalerosScreen";
-import CreateEditPasoScreen from "../screens/CreateEditPasoScreen";
-import MainScreen from "../screens/MainScreen";
-import PasoDetailScreen from "../screens/PasoDetailScreen";
-import PasoScreen from "../screens/PasoScreen";
+import AddEnsayoScreen from "../screens/AddEnsayo";
+import AddPasoScreen from "../screens/AddPasoScreen";
+import AsignarCostalerosScreen from "../screens/AsignarCostalerosScreen";
+import CostaleroScreen from "../costalero/costaleroScreen";
+import EnsayoMenuScreen from "../ensayoMenu/ensayoMenuScreen";
+import MainScreen from "../main/mainScreen";
+import PasoDetailMenuScreen from "../screens/PasoDetailMenu";
 import React from "react";
+import VerCostalerosScreen from "../screens/VerCostalerosScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 
 const Stack = createStackNavigator();
 
-const Navigation = () => {
-  return (
-    <Stack.Navigator initialRouteName={TEXTS.SCREENS.main}>
-      <Stack.Screen name={TEXTS.SCREENS.main} component={MainScreen} />
-      <Stack.Screen
-        name={TEXTS.SCREENS.pasoDetail}
-        component={PasoDetailScreen}
-      />
-      <Stack.Screen name={TEXTS.SCREENS.pasoScreen} component={PasoScreen} />
-      <Stack.Screen
-        name={TEXTS.SCREENS.costalerosScreen}
-        component={CostalerosScreen}
-      />
-      <Stack.Screen
-        name={TEXTS.SCREENS.addCostaleroScreen}
-        component={AddCostaleroScreen}
-      />
-      <Stack.Screen
-        name={TEXTS.SCREENS.createEditPasoScreen}
-        component={CreateEditPasoScreen}
-      />
-    </Stack.Navigator>
-  );
-};
+const StackNavigator = () => (
+  <Stack.Navigator>
+    <Stack.Screen name={TEXTS.SCREENS.MENU_PRINCIPAL} component={MainScreen} />
+    <Stack.Screen name={TEXTS.SCREENS.ADD_PASO} component={AddPasoScreen} />
+    <Stack.Screen
+      name={TEXTS.SCREENS.ADD_COSTALERO}
+      component={CostaleroScreen}
+    />
+    <Stack.Screen
+      name={TEXTS.SCREENS.VER_COSTALEROS}
+      component={VerCostalerosScreen}
+    />
+    <Stack.Screen
+      name={TEXTS.SCREENS.PASO_DETAILS}
+      component={PasoDetailMenuScreen}
+    />
+    <Stack.Screen name={TEXTS.SCREENS.ENSAYOS} component={EnsayoMenuScreen} />
+    <Stack.Screen name={TEXTS.SCREENS.ADD_ENSAYO} component={AddEnsayoScreen} />
+    <Stack.Screen
+      name={TEXTS.SCREENS.ASIGNAR_COSTALEROS}
+      component={AsignarCostalerosScreen}
+    />
+  </Stack.Navigator>
+);
 
-export default Navigation;
+export default StackNavigator;

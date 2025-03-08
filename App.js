@@ -1,11 +1,14 @@
-import Navigation from "./src/utils/Navigation";
 import { NavigationContainer } from "@react-navigation/native";
+import { Provider as PaperProvider } from "react-native-paper";
 import React from "react";
+import StackNavigator from "./src/utils/Navigation";
 
-export default function App() {
-  return (
+const App = () => (
+  <PaperProvider>
     <NavigationContainer>
-      <Navigation />
+      <StackNavigator />
     </NavigationContainer>
-  );
-}
+  </PaperProvider>
+);
+
+export default App;
