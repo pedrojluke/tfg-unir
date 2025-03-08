@@ -133,6 +133,18 @@ const AsignarCostalerosScreen = () => {
       ); // Excluir fuera del rango
   };
 
+  const borrarAsignacion = (trabajaderaId, posicion) => {
+    setAsignaciones((prev) => {
+      const nuevaAsignacion = [...prev[trabajaderaId]];
+      nuevaAsignacion[posicion] = null; // Se deja vacío
+
+      return {
+        ...prev,
+        [trabajaderaId]: nuevaAsignacion,
+      };
+    });
+  };
+
   const asignarAutomaticamente = () => {
     setLoadingAssign(true);
     try {
@@ -247,12 +259,25 @@ const AsignarCostalerosScreen = () => {
                     c ? `${c.nombre} ${c.apellidos}${suplemento}` : "Vacío"
                   }
                   right={() => (
-                    <Button
-                      mode="text"
-                      onPress={() => abrirModalSeleccionCostalero(i)}
-                    >
-                      Asignar
-                    </Button>
+                    <View style={{ flexDirection: "row", gap: 5 }}>
+                      {c && (
+                        <Button
+                          mode="text"
+                          textColor="red"
+                          onPress={() =>
+                            borrarAsignacion(selectedTrabajadera.id, i)
+                          }
+                        >
+                          Borrar
+                        </Button>
+                      )}
+                      <Button
+                        mode="text"
+                        onPress={() => abrirModalSeleccionCostalero(i)}
+                      >
+                        Asignar
+                      </Button>
+                    </View>
                   )}
                 />
               );
@@ -298,7 +323,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     backgroundColor: "white",
-    padding: 20,
+    padding: 5,
     margin: 20,
     borderRadius: 10,
   },
