@@ -59,7 +59,7 @@ const AddEnsayo = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      setCostaleros(costalerosList);
+      setCostaleros(costalerosList.sort((a, b) => a.altura - b.altura));
     } catch (error) {
       console.error("Error fetching costaleros: ", error);
     } finally {

@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Card,
+  List,
+  Text,
+  useTheme,
+} from "react-native-paper";
+import { FlatList, StyleSheet, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import {
   collection,
   doc,
@@ -8,98 +15,192 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { useNavigation, useRoute } from "@react-navigation/native"; // 🔥 Asegurar que route está disponible
 
-const AsignarCostalerosScreen = ({ route }) => {
-  const { pasoId, asistencia } = route.params;
+import munkres from "munkres-js";
+
+const AsignarCostalerosScreen = () => {
+  const route = useRoute(); // 🔥 Se obtiene route correctamente
+  const navigation = useNavigation();
+
+  // 🔥 Se manejan los parámetros de manera segura
+  const { pasoId, asistencia } = route?.params || {
+    pasoId: null,
+    asistencia: [],
+  };
+
+  if (!pasoId || !asistencia) {
+    console.warn("⚠️ Error: pasoId o asistencia no recibidos");
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>
+          ❌ Error: No se han recibido los datos necesarios.
+        </Text>
+      </View>
+    );
+  }
+
+  const theme = useTheme();
+  const flatListRef = useRef(null);
+
   const [costalerosDetalles, setCostalerosDetalles] = useState([]);
   const [trabajaderas, setTrabajaderas] = useState([]);
+  const [asignaciones, setAsignaciones] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("🚀 useEffect ejecutado!");
-    console.log("📌 Paso ID recibido:", pasoId);
-    console.log("📌 Asistencia recibida:", asistencia);
-
-    if (!pasoId || !asistencia || asistencia.length === 0) {
-      console.warn(
-        "⚠️ pasoId o asistencia están vacíos, no se ejecutará la consulta."
-      );
-      return;
-    }
-
-    const fetchData = async () => {
-      const db = getFirestore();
-
-      try {
-        // 🔍 Recuperar costaleros del paso con asistencia
-        const costalerosRef = collection(db, "usuarios");
-        const costalerosQuery = query(
-          costalerosRef,
-          where("rol", "==", "costalero"),
-          where("pasoId", "==", pasoId)
-        );
-        const costalerosSnapshot = await getDocs(costalerosQuery);
-        const todosLosCostaleros = costalerosSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        console.log("📋 Costaleros en Firestore:", todosLosCostaleros);
-
-        // Filtrar los costaleros según asistencia
-        const detallesArray = todosLosCostaleros.filter((costalero) =>
-          asistencia.includes(costalero.id)
-        );
-
-        console.log("✅ Costaleros filtrados por asistencia:", detallesArray);
-        setCostalerosDetalles(detallesArray);
-
-        // 🔍 Recuperar trabajaderas desde la subcolección pasos/{pasoId}/trabajaderas
-        const pasoDocRef = doc(db, "pasos", pasoId);
-        const trabajaderasRef = collection(pasoDocRef, "trabajaderas");
-        const trabajaderasSnapshot = await getDocs(trabajaderasRef);
-        const trabajaderasArray = trabajaderasSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        console.log("📋 Trabajaderas en Firestore:", trabajaderasArray);
-        setTrabajaderas(trabajaderasArray);
-      } catch (error) {
-        console.error("🔥 Error en la consulta a Firestore:", error.message);
-      }
-    };
-
     fetchData();
   }, [pasoId, asistencia]);
 
+  const fetchData = async () => {
+    const db = getFirestore();
+
+    try {
+      const costalerosRef = collection(db, "usuarios");
+      const costalerosQuery = query(
+        costalerosRef,
+        where("rol", "==", "costalero"),
+        where("pasoId", "==", pasoId)
+      );
+      const costalerosSnapshot = await getDocs(costalerosQuery);
+      let todosLosCostaleros = costalerosSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      let detallesArray = todosLosCostaleros.filter((costalero) =>
+        asistencia.includes(costalero.id)
+      );
+
+      detallesArray.sort((a, b) => a.altura - b.altura);
+      setCostalerosDetalles(detallesArray);
+
+      const pasoDocRef = doc(db, "pasos", pasoId);
+      const trabajaderasRef = collection(pasoDocRef, "trabajaderas");
+      const trabajaderasSnapshot = await getDocs(trabajaderasRef);
+      let trabajaderasArray = trabajaderasSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      trabajaderasArray.sort(
+        (a, b) => a.orden - b.orden || a.altura - b.altura
+      );
+      setTrabajaderas(trabajaderasArray);
+
+      const asignacionesArray = asignarCostalerosATrabajaderas(
+        detallesArray,
+        trabajaderasArray
+      );
+      setAsignaciones(asignacionesArray);
+    } catch (error) {
+      console.error("🔥 Error en la consulta a Firestore:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const asignarCostalerosATrabajaderas = (costaleros, trabajaderas) => {
+    let totalHuecos = trabajaderas.reduce((sum, t) => sum + t.huecos, 0);
+
+    if (costaleros.length === 0 || totalHuecos === 0) return [];
+
+    let costMatrix = Array(costaleros.length)
+      .fill(null)
+      .map(() => Array(totalHuecos).fill(Infinity));
+
+    let huecosArray = [];
+
+    trabajaderas.forEach((trabajadera, tIndex) => {
+      for (let i = 0; i < trabajadera.huecos; i++) {
+        huecosArray.push({ trabajadera, tIndex });
+      }
+    });
+
+    costaleros.forEach((costalero, cIndex) => {
+      huecosArray.forEach((hueco, hIndex) => {
+        if (costalero.altura <= hueco.trabajadera.altura) {
+          costMatrix[cIndex][hIndex] = Math.abs(
+            costalero.altura - hueco.trabajadera.altura
+          );
+        }
+      });
+    });
+
+    const assignment = munkres(costMatrix);
+
+    let asignaciones = assignment.map(([cIndex, hIndex]) => ({
+      costalero: costaleros[cIndex],
+      trabajadera: huecosArray[hIndex]?.trabajadera || null,
+    }));
+
+    return asignaciones.filter((a) => a.trabajadera !== null);
+  };
+
   return (
-    <View>
-      <Text>Asignación de Costaleros</Text>
-
-      {costalerosDetalles.length > 0 ? (
-        costalerosDetalles.map((costalero) => (
-          <Text key={costalero.id}>
-            {costalero.nombre} {costalero.apellidos} - {costalero.altura} cm
-          </Text>
-        ))
+    <View style={styles.container}>
+      {loading ? (
+        <ActivityIndicator
+          animating={true}
+          size="large"
+          color={theme.colors.primary}
+        />
       ) : (
-        <Text>⚠️ No hay costaleros disponibles</Text>
-      )}
-
-      <Text>---------------------</Text>
-      <Text>Trabajaderas del Paso</Text>
-
-      {trabajaderas.length > 0 ? (
-        trabajaderas.map((trabajadera) => (
-          <Text key={trabajadera.id}>
-            Fila {trabajadera.fila} - Altura: {trabajadera.altura} cm
-          </Text>
-        ))
-      ) : (
-        <Text>⚠️ No hay trabajaderas disponibles</Text>
+        <FlatList
+          ref={flatListRef}
+          data={trabajaderas}
+          horizontal
+          pagingEnabled
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Card style={styles.trabajaderaCard}>
+              <Card.Title
+                title={`Trabajadera ${item.orden} (${item.altura} cm)`}
+                subtitle={`Huecos: ${item.huecos}`}
+              />
+              <Card.Content>
+                {asignaciones
+                  .filter((a) => a.trabajadera.id === item.id)
+                  .map(({ costalero }) => {
+                    const suplemento =
+                      costalero.altura < item.altura
+                        ? ` (+${item.altura - costalero.altura} cm)`
+                        : "";
+                    return (
+                      <List.Item
+                        key={costalero.id}
+                        title={`${costalero.nombre} ${costalero.apellidos} ${suplemento}`}
+                        description={`Altura: ${costalero.altura} cm`}
+                        left={(props) => (
+                          <List.Icon {...props} icon="human-male-board" />
+                        )}
+                      />
+                    );
+                  })}
+              </Card.Content>
+            </Card>
+          )}
+          showsHorizontalScrollIndicator={false}
+        />
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20 },
+  trabajaderaCard: { width: 300, marginHorizontal: 10 },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "red",
+    textAlign: "center",
+  },
+});
 
 export default AsignarCostalerosScreen;
