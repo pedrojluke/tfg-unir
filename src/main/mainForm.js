@@ -15,10 +15,7 @@ const MainForm = ({ paso, onSave, onCancel }) => {
         onChangeText={setNombre}
       />
       <Button mode={TEXTS.contained} onPress={() => onSave({ nombre })}>
-        Guardar Paso
-      </Button>
-      <Button mode={TEXTS.text} onPress={onCancel}>
-        Cancelar
+        {TEXTS.save}
       </Button>
     </View>
   );

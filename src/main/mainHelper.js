@@ -4,6 +4,7 @@ const TEXTS = {
   addStep: "Añadir Paso",
   pasoNameLabel: "Nombre del paso",
   contained: "contained",
+  save: "Guardar Paso",
   text: "text",
   navigationTarget: "PasoDetailMenu",
   large: "large",
