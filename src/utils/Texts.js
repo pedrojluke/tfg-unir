@@ -1,22 +1,11 @@
 const SCREENS = {
-  main: "Main",
-  pasoDetail: "PasoDetail",
-  pasoScreen: "PasoScreen",
-  costalerosScreen: "CostalerosScreen",
-  addCostaleroScreen: "AddCostaleroScreen",
-  createEditPasoScreen: "CreateEditPasoScreen",
+  MENU_PRINCIPAL: "Menú Principal",
+  ADD_PASO: "Añadir Paso",
+  ADD_COSTALERO: "Añadir Costalero",
+  VER_COSTALEROS: "Ver Costaleros",
+  PASO_DETAILS: "PasoDetailMenu",
+  ENSAYOS: "EnsayosMenu",
+  ADD_ENSAYO: "AddEnsayo",
+  ASIGNAR_COSTALEROS: "AsignarCostaleros",
 };
-
-const LABELS = {
-  empty: "",
-  saveCostalero: "Guardar Costalero",
-  surname: "Apellidos",
-  phone: "Teléfono",
-  height: "Altura",
-};
-
-const FIELDS = {
-  name: "Nombre",
-};
-const ERRORS = { allFields: "Por favor, completa todos los campos" };
-export { ERRORS, FIELDS, LABELS, SCREENS };
+export { SCREENS };
