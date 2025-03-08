@@ -1,18 +1,17 @@
 import * as TEXTS from "./Texts";
 
-import {
-  AddCostaleroScreen,
-  AddEnsayoScreen,
-  AddPasoScreen,
-  AsignarCostalerosScreen,
-  EnsayosMenuScreen,
-  MenuScreen,
-  PasoDetailMenuScreen,
-  VerCostalerosScreen,
-} from "../screens";
-
+import AddEnsayoScreen from "../screens/AddEnsayo";
+import AddPasoScreen from "../screens/AddPasoScreen";
+import AsignarCostalerosScreen from "../screens/AsignarCostalerosScreen";
+import CostaleroScreen from "../costalero/costaleroScreen";
+import EnsayosMenuScreen from "../screens/EnsayosMenu";
+import MenuScreen from "../screens/MenuScreen";
+import PasoDetailMenuScreen from "../screens/PasoDetailMenu";
 import React from "react";
+import VerCostalerosScreen from "../screens/VerCostalerosScreen";
 import { createStackNavigator } from "@react-navigation/stack";
+
+// Importamos las pantallas desde sus carpetas correspondientes
 
 const Stack = createStackNavigator();
 
@@ -22,7 +21,7 @@ const StackNavigator = () => (
     <Stack.Screen name={TEXTS.SCREENS.ADD_PASO} component={AddPasoScreen} />
     <Stack.Screen
       name={TEXTS.SCREENS.ADD_COSTALERO}
-      component={AddCostaleroScreen}
+      component={CostaleroScreen}
     />
     <Stack.Screen
       name={TEXTS.SCREENS.VER_COSTALEROS}
