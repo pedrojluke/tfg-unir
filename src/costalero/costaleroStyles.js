@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
     marginBottom: 20,
-    textTransform: "uppercase",
   },
   input: { marginBottom: 15, backgroundColor: "#FFF" },
   fixedButtonContainer: {

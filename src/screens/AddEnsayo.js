@@ -1,13 +1,4 @@
-import {
-  ActivityIndicator,
-  Button,
-  Card,
-  List,
-  Text,
-  useTheme,
-} from "react-native-paper";
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   addDoc,
   collection,
@@ -18,7 +9,16 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  Card,
+  List,
+  Text,
+  useTheme,
+} from "react-native-paper";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import dayjs from "dayjs";
@@ -318,7 +318,6 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
     marginBottom: 20,
-    textTransform: "uppercase",
   },
   dateButton: {
     marginBottom: 10,

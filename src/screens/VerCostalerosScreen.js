@@ -139,7 +139,6 @@ const styles = StyleSheet.create({
     color: "#333333",
     textAlign: "center",
     marginBottom: 20,
-    textTransform: "uppercase",
   },
   searchBar: {
     marginBottom: 15,

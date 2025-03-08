@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
     color: "#333333",
     textAlign: "center",
     marginBottom: 20,
-    textTransform: "uppercase",
   },
   optionButton: {
     width: "90%",

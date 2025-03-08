@@ -4,14 +4,12 @@ import AddEnsayoScreen from "../screens/AddEnsayo";
 import AddPasoScreen from "../screens/AddPasoScreen";
 import AsignarCostalerosScreen from "../screens/AsignarCostalerosScreen";
 import CostaleroScreen from "../costalero/costaleroScreen";
-import EnsayosMenuScreen from "../screens/EnsayosMenu";
+import EnsayoMenuScreen from "../ensayoMenu/ensayoMenuScreen";
 import MenuScreen from "../screens/MenuScreen";
 import PasoDetailMenuScreen from "../screens/PasoDetailMenu";
 import React from "react";
 import VerCostalerosScreen from "../screens/VerCostalerosScreen";
 import { createStackNavigator } from "@react-navigation/stack";
-
-// Importamos las pantallas desde sus carpetas correspondientes
 
 const Stack = createStackNavigator();
 
@@ -31,7 +29,7 @@ const StackNavigator = () => (
       name={TEXTS.SCREENS.PASO_DETAILS}
       component={PasoDetailMenuScreen}
     />
-    <Stack.Screen name={TEXTS.SCREENS.ENSAYOS} component={EnsayosMenuScreen} />
+    <Stack.Screen name={TEXTS.SCREENS.ENSAYOS} component={EnsayoMenuScreen} />
     <Stack.Screen name={TEXTS.SCREENS.ADD_ENSAYO} component={AddEnsayoScreen} />
     <Stack.Screen
       name={TEXTS.SCREENS.ASIGNAR_COSTALEROS}

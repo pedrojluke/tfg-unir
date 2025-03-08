@@ -20,6 +20,14 @@ const collections = {
     name: "usuarios",
     rol: "costalero",
   },
+  pasos: {
+    name: "pasos",
+  },
+  ensayos: {
+    name: "ensayos",
+    fechaFilter: "fecha",
+    fechaOrder: "asc",
+  },
 };
 
 export { collections, db };

@@ -1,13 +1,4 @@
-import {
-  ActivityIndicator,
-  Button,
-  Card,
-  Text,
-  TextInput,
-  useTheme,
-} from "react-native-paper";
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   addDoc,
   collection,
@@ -17,7 +8,16 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  Card,
+  Text,
+  TextInput,
+  useTheme,
+} from "react-native-paper";
 
 import { Ionicons } from "@expo/vector-icons";
 import { db } from "../service/firebase";
@@ -268,7 +268,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
-    textTransform: "uppercase",
   },
   input: {
     marginBottom: 15,
