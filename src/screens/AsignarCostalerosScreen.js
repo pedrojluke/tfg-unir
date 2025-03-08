@@ -20,6 +20,8 @@ import {
 } from "firebase/firestore";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
+import munkres from "munkres-js";
+
 const AsignarCostalerosScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -130,6 +132,50 @@ const AsignarCostalerosScreen = () => {
       ); // Excluir fuera del rango
   };
 
+  const asignarAutomaticamente = () => {
+    let noAsignados = costalerosDetalles.filter(
+      (c) =>
+        !Object.values(asignaciones)
+          .flat()
+          .some((a) => a?.id === c.id)
+    );
+
+    let costoMatriz = [];
+    let huecosArray = [];
+
+    trabajaderas.forEach((t) => {
+      for (let i = 0; i < t.huecos; i++) {
+        if (!asignaciones[t.id][i]) {
+          huecosArray.push({ trabajadera: t, posicion: i });
+        }
+      }
+    });
+
+    noAsignados.forEach((c) => {
+      let fila = huecosArray.map((h) =>
+        c.altura <= h.trabajadera.altura
+          ? Math.abs(c.altura - h.trabajadera.altura)
+          : Infinity
+      );
+      costoMatriz.push(fila);
+    });
+
+    const asignacionesMunkres = munkres(costoMatriz);
+
+    let nuevasAsignaciones = { ...asignaciones };
+
+    asignacionesMunkres.forEach(([costaleroIndex, huecoIndex]) => {
+      let costalero = noAsignados[costaleroIndex];
+      let hueco = huecosArray[huecoIndex];
+
+      if (costalero && hueco) {
+        nuevasAsignaciones[hueco.trabajadera.id][hueco.posicion] = costalero;
+      }
+    });
+
+    setAsignaciones(nuevasAsignaciones);
+  };
+
   return (
     <View style={styles.container}>
       {loading ? (
@@ -157,7 +203,6 @@ const AsignarCostalerosScreen = () => {
               />
             </Card>
           ))}
-
           <Button
             mode="contained"
             style={styles.unassignedButton}
@@ -165,9 +210,16 @@ const AsignarCostalerosScreen = () => {
           >
             Ver Costaleros No Asignados
           </Button>
+
+          <Button
+            mode="contained"
+            style={styles.assignButton}
+            onPress={asignarAutomaticamente}
+          >
+            Asignar Automáticamente
+          </Button>
         </ScrollView>
       )}
-
       <Portal>
         <Modal
           visible={modalVisible}
@@ -234,23 +286,28 @@ const styles = StyleSheet.create({
   trabajaderaCard: {
     marginBottom: 10,
     borderRadius: 10,
+    backgroundColor: "#6200EE",
+    modal: {
+      backgroundColor: "white",
+      padding: 20,
+      margin: 20,
+      borderRadius: 10,
+    },
+    fullScreenModal: {
+      flex: 1,
+      backgroundColor: "white",
+      padding: 20,
+    },
+    scrollModal: {
+      flexGrow: 1,
+    },
+    modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+    unassignedButton: { marginTop: 20, backgroundColor: "red" },
   },
-  modal: {
-    backgroundColor: "white",
-    padding: 20,
-    margin: 20,
-    borderRadius: 10,
+  assignButton: {
+    marginTop: 20,
+    backgroundColor: "#03A9F4",
   },
-  fullScreenModal: {
-    flex: 1,
-    backgroundColor: "white",
-    padding: 20,
-  },
-  scrollModal: {
-    flexGrow: 1,
-  },
-  modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-  unassignedButton: { marginTop: 20, backgroundColor: "red" },
 });
 
 export default AsignarCostalerosScreen;
