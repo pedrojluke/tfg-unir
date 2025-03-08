@@ -221,20 +221,39 @@ const AsignarCostalerosScreen = () => {
         />
       ) : (
         <ScrollView>
-          {trabajaderas.map((trabajadera) => (
-            <Card
-              key={trabajadera.id}
-              style={[styles.trabajaderaCard]}
-              onPress={() => abrirModalTrabajadera(trabajadera)}
-            >
-              <Card.Title
-                title={`Trabajadera ${trabajadera.orden} (${trabajadera.altura} cm)`}
-                subtitle={`Huecos: ${trabajadera.huecos}`}
-                titleStyle={{ color: "white" }}
-                subtitleStyle={{ color: "white" }}
-              />
-            </Card>
-          ))}
+          {trabajaderas.map((trabajadera) => {
+            const trabajaderaCompleta = asignaciones[trabajadera.id]?.every(
+              (c) => c !== null
+            );
+
+            return (
+              <Card
+                key={trabajadera.id}
+                style={[styles.trabajaderaCard]}
+                onPress={() => abrirModalTrabajadera(trabajadera)}
+              >
+                <Card.Title
+                  title={`Trabajadera ${trabajadera.orden} (${trabajadera.altura} cm)`}
+                  subtitle={`Huecos: ${trabajadera.huecos}`}
+                  titleStyle={{ color: "white" }}
+                  subtitleStyle={{ color: "white" }}
+                  right={() =>
+                    trabajaderaCompleta ? (
+                      <Text
+                        style={{
+                          fontSize: 24,
+                          color: "lightgreen",
+                          paddingRight: 16,
+                        }}
+                      >
+                        ✅
+                      </Text>
+                    ) : null
+                  }
+                />
+              </Card>
+            );
+          })}
           <Button
             mode="contained"
             style={styles.unassignedButton}
