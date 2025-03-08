@@ -224,7 +224,7 @@ const AsignarCostalerosScreen = () => {
         <Modal
           visible={modalVisible}
           onDismiss={() => setModalVisible(false)}
-          contentContainerStyle={styles.modal}
+          contentContainerStyle={[styles.modal, { backgroundColor: "white" }]}
         >
           <Text style={styles.modalTitle}>
             Costaleros en Trabajadera {selectedTrabajadera?.orden}
@@ -257,7 +257,10 @@ const AsignarCostalerosScreen = () => {
         <Modal
           visible={modalSelectVisible}
           onDismiss={() => setModalSelectVisible(false)}
-          contentContainerStyle={styles.fullScreenModal}
+          contentContainerStyle={[
+            styles.fullScreenModal,
+            { backgroundColor: "white" },
+          ]}
         >
           <Text style={styles.modalTitle}>Seleccionar Costalero</Text>
           <ScrollView contentContainerStyle={styles.scrollModal}>
