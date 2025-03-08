@@ -2,108 +2,147 @@ import {
   ActivityIndicator,
   Button,
   Card,
-  List,
   Text,
+  TextInput,
   useTheme,
 } from "react-native-paper";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import {
+  addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
-  query,
-  where,
+  updateDoc,
 } from "firebase/firestore";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
-import DateTimePicker from "@react-native-community/datetimepicker";
-import dayjs from "dayjs";
+import { Ionicons } from "@expo/vector-icons";
 import { db } from "../service/firebase";
 
-const AddEnsayo = () => {
+const AddPasoScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { pasoId, ensayoId } = route.params || {};
   const theme = useTheme();
+  const pasoId = route.params?.pasoId || null;
 
-  const [fechaEnsayo, setFechaEnsayo] = useState(new Date());
-  const [costaleros, setCostaleros] = useState([]);
-  const [asistencia, setAsistencia] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [nombre, setNombre] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [trabajaderas, setTrabajaderas] = useState([]);
+  const [altura, setAltura] = useState("");
+  const [orden, setOrden] = useState("");
+  const [huecos, setHuecos] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [addingTrabajadera, setAddingTrabajadera] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    fetchCostaleros();
-    if (ensayoId) {
-      setIsEditing(true);
-      loadEnsayoDetails();
+    if (pasoId) {
+      loadPasoData();
+      loadTrabajaderas();
     }
-  }, [ensayoId]);
+  }, [pasoId]);
 
-  const fetchCostaleros = async () => {
+  const loadPasoData = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const costalerosRef = collection(db, "usuarios");
-      const q = query(
-        costalerosRef,
-        where("pasoId", "==", pasoId),
-        where("rol", "==", "costalero")
-      );
-      const costalerosSnap = await getDocs(q);
-      let costalerosList = costalerosSnap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      // 🔥 Ordenar por altura ascendente
-      costalerosList.sort((a, b) => a.altura - b.altura);
-
-      setCostaleros(costalerosList);
+      const pasoRef = doc(db, "pasos", pasoId);
+      const pasoSnap = await getDoc(pasoRef);
+      if (pasoSnap.exists()) {
+        const data = pasoSnap.data();
+        setNombre(data.nombre);
+        setDescripcion(data.descripcion);
+        setIsEditing(true);
+      }
     } catch (error) {
-      console.error("Error fetching costaleros: ", error);
+      console.error("Error loading paso data: ", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const loadEnsayoDetails = async () => {
+  const loadTrabajaderas = async () => {
     try {
-      setLoading(true);
-      const ensayoRef = doc(db, `pasos/${pasoId}/ensayos/${ensayoId}`);
-      const ensayoSnap = await getDoc(ensayoRef);
-
-      if (ensayoSnap.exists()) {
-        const ensayoData = ensayoSnap.data();
-        setFechaEnsayo(dayjs(ensayoData.fecha).toDate());
-
-        // Obtener costaleros y ordenarlos por altura
-        const costalerosRef = collection(db, "usuarios");
-        const q = query(
-          costalerosRef,
-          where("pasoId", "==", pasoId),
-          where("rol", "==", "costalero")
-        );
-        const costalerosSnap = await getDocs(q);
-        let costalerosList = costalerosSnap.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        costalerosList.sort((a, b) => a.altura - b.altura);
-        setCostaleros(costalerosList);
-
-        // Filtrar los costaleros que están en el ensayo y marcarlos
-        const costalerosSeleccionados = costalerosList
-          .filter((costalero) => ensayoData.costaleros.includes(costalero.id))
-          .map((c) => c.id);
-
-        setAsistencia(costalerosSeleccionados);
-      }
+      const trabajaderasRef = collection(db, `pasos/${pasoId}/trabajaderas`);
+      const trabajaderasSnap = await getDocs(trabajaderasRef);
+      const trabajaderasList = trabajaderasSnap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      // Ordenar por orden de menor a mayor
+      setTrabajaderas(trabajaderasList.sort((a, b) => a.orden - b.orden));
     } catch (error) {
-      console.error("Error loading ensayo details: ", error);
+      console.error("Error loading trabajaderas: ", error);
+    }
+  };
+
+  const addTrabajadera = async () => {
+    if (!altura || !huecos || !orden) return;
+
+    setAddingTrabajadera(true);
+
+    const newTrabajadera = {
+      id: Date.now(),
+      altura: parseInt(altura),
+      orden: parseInt(orden),
+      huecos: parseInt(huecos),
+    };
+
+    setTrabajaderas(
+      [...trabajaderas, newTrabajadera].sort((a, b) => a.orden - b.orden)
+    );
+
+    setAltura("");
+    setOrden("");
+    setHuecos("");
+
+    setAddingTrabajadera(false);
+  };
+
+  const removeTrabajadera = (id) => {
+    setTrabajaderas(
+      trabajaderas.filter((trabajadera) => trabajadera.id !== id)
+    );
+  };
+
+  const savePaso = async () => {
+    if (!nombre || !descripcion || loading) return;
+    setLoading(true);
+    try {
+      let pasoRef;
+      if (isEditing) {
+        pasoRef = doc(db, "pasos", pasoId);
+        await updateDoc(pasoRef, { nombre, descripcion });
+
+        // 🔥 Eliminar todas las trabajaderas antes de guardar las nuevas
+        const trabajaderasRef = collection(db, `pasos/${pasoId}/trabajaderas`);
+        const trabajaderasSnap = await getDocs(trabajaderasRef);
+        for (const docSnapshot of trabajaderasSnap.docs) {
+          await deleteDoc(
+            doc(db, `pasos/${pasoId}/trabajaderas`, docSnapshot.id)
+          );
+        }
+      } else {
+        pasoRef = await addDoc(collection(db, "pasos"), {
+          nombre,
+          descripcion,
+        });
+      }
+
+      // 🔄 Guardar nuevamente las trabajaderas en orden
+      for (const trabajadera of trabajaderas) {
+        await addDoc(collection(db, `pasos/${pasoRef.id}/trabajaderas`), {
+          altura: trabajadera.altura,
+          orden: trabajadera.orden,
+          huecos: trabajadera.huecos,
+        });
+      }
+
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error saving paso: ", error);
     } finally {
       setLoading(false);
     }
@@ -111,77 +150,106 @@ const AddEnsayo = () => {
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text style={styles.loadingText}>Cargando ensayo...</Text>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.title}>
+          {isEditing ? "Editar Paso" : "Añadir Paso"}
+        </Text>
+
+        <TextInput
+          label="Nombre del Paso"
+          value={nombre}
+          onChangeText={setNombre}
+          style={styles.input}
+          mode="outlined"
+        />
+        <TextInput
+          label="Descripción"
+          value={descripcion}
+          onChangeText={setDescripcion}
+          multiline
+          style={styles.input}
+          mode="outlined"
+        />
+
+        <Text style={styles.sectionTitle}>Trabajaderas</Text>
+
+        <View style={styles.row}>
+          <TextInput
+            label="Altura"
+            value={altura}
+            onChangeText={setAltura}
+            keyboardType="numeric"
+            mode="outlined"
+            style={[styles.input, styles.halfInput]}
+          />
+          <TextInput
+            label="Orden"
+            value={orden}
+            onChangeText={setOrden}
+            keyboardType="numeric"
+            mode="outlined"
+            style={[styles.input, styles.halfInput]}
+          />
         </View>
-      ) : (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.title}>
-            {isEditing ? "Editar Ensayo" : "Nuevo Ensayo"}
-          </Text>
 
-          <Button
-            mode="contained"
-            onPress={() => setShowDatePicker(true)}
-            style={styles.dateButton}
-            labelStyle={styles.buttonText}
-          >
-            Seleccionar Fecha: {dayjs(fechaEnsayo).format("DD/MM/YYYY")}
-          </Button>
+        <TextInput
+          label="Huecos"
+          value={huecos}
+          onChangeText={setHuecos}
+          keyboardType="numeric"
+          mode="outlined"
+          style={styles.input}
+        />
 
-          {showDatePicker && (
-            <DateTimePicker
-              value={fechaEnsayo}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => {
-                setShowDatePicker(false);
-                if (selectedDate) setFechaEnsayo(selectedDate);
-              }}
-            />
+        <Button
+          mode="contained"
+          onPress={addTrabajadera}
+          style={styles.createButton}
+          labelStyle={styles.buttonText}
+          disabled={addingTrabajadera}
+        >
+          {addingTrabajadera ? (
+            <ActivityIndicator animating={true} color="#ffffff" />
+          ) : (
+            "Añadir Trabajadera"
           )}
+        </Button>
 
-          <Card style={styles.listCard}>
-            <Card.Title title="Asistencia de Costaleros" />
-            <Card.Content style={styles.listContainer}>
-              <ScrollView style={styles.scrollableList}>
-                {costaleros.map((costalero) => (
-                  <List.Item
-                    key={costalero.id}
-                    title={`${costalero.nombre} ${costalero.apellidos}`}
-                    description={`Altura: ${costalero.altura} cm`}
-                    left={(props) => <List.Icon {...props} icon="account" />}
-                    right={(props) => (
-                      <List.Icon
-                        {...props}
-                        icon={
-                          asistencia.includes(costalero.id)
-                            ? "check-circle"
-                            : "checkbox-blank-circle-outline"
-                        }
-                        color={
-                          asistencia.includes(costalero.id)
-                            ? theme.colors.primary
-                            : "#ccc"
-                        }
-                      />
-                    )}
-                    onPress={() =>
-                      setAsistencia((prevAsistencia) =>
-                        prevAsistencia.includes(costalero.id)
-                          ? prevAsistencia.filter((id) => id !== costalero.id)
-                          : [...prevAsistencia, costalero.id]
-                      )
-                    }
-                  />
-                ))}
-              </ScrollView>
-            </Card.Content>
-          </Card>
-        </ScrollView>
-      )}
+        {trabajaderas.length > 0 &&
+          trabajaderas.map((trabajadera) => (
+            <Card key={trabajadera.id} style={styles.trabajaderaCard}>
+              <Card.Content style={styles.trabajaderaRow}>
+                <Text style={styles.trabajaderaText}>
+                  Orden: {trabajadera.orden} | Altura: {trabajadera.altura} cm |
+                  Huecos: {trabajadera.huecos}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => removeTrabajadera(trabajadera.id)}
+                >
+                  <Ionicons name="trash" size={24} color="red" />
+                </TouchableOpacity>
+              </Card.Content>
+            </Card>
+          ))}
+      </ScrollView>
+
+      <View style={styles.fixedButtonContainer}>
+        <Button
+          mode="contained"
+          onPress={savePaso}
+          disabled={loading}
+          style={styles.createButton}
+          labelStyle={styles.buttonText}
+        >
+          {loading ? (
+            <ActivityIndicator animating={true} color="#ffffff" />
+          ) : isEditing ? (
+            "Actualizar Paso"
+          ) : (
+            "Guardar Paso"
+          )}
+        </Button>
+      </View>
     </View>
   );
 };
@@ -193,43 +261,40 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 20,
-    paddingBottom: 100,
+    paddingBottom: 80,
   },
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#333",
     textAlign: "center",
     marginBottom: 20,
     textTransform: "uppercase",
   },
-  dateButton: {
-    marginBottom: 10,
+  input: {
+    marginBottom: 15,
+    backgroundColor: "#FFFFFF",
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  halfInput: {
+    flex: 1,
+    marginRight: 10,
+  },
+  createButton: {
+    width: "90%",
     backgroundColor: "#6200EE",
+    borderRadius: 10,
+    marginBottom: 20,
+    elevation: 2,
+    alignSelf: "center",
   },
   buttonText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#FFFFFF",
   },
-  listCard: {
-    marginTop: 20,
-  },
-  scrollableList: {
-    maxHeight: 350,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F7F7F7",
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
 });
 
-export default AddEnsayo;
+export default AddPasoScreen;
