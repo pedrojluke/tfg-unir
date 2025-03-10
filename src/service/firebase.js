@@ -25,6 +25,7 @@ const collections = {
     name: "pasos",
     id: "pasoId",
     equals: "==",
+    trabajaderasField: "trabajaderas",
   },
   ensayos: {
     name: "ensayos",

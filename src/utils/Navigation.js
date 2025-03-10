@@ -1,7 +1,7 @@
 import * as TEXTS from "./Texts";
 
 import AddEnsayoScreen from "../screens/AddEnsayo";
-import AddPasoScreen from "../screens/AddPasoScreen";
+import AddPasoScreen from "../paso/pasoScreen";
 import AsignarCostalerosScreen from "../screens/AsignarCostalerosScreen";
 import CostaleroDetailScreen from "../costaleroDetail/costaleroDetailScreen";
 import CostaleroScreen from "../costalero/costaleroScreen";
