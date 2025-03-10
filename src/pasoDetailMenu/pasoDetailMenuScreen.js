@@ -20,7 +20,7 @@ const PasoDetailMenuScreen = () => {
           mode={CSS.contained}
           style={styles.optionButton}
           labelStyle={styles.buttonText}
-          onPress={() => handleNavigation(TEXTS.editPaso)}
+          onPress={() => handleNavigation(TEXTS.addPaso)}
         >
           {TEXTS.editPaso}
         </Button>
