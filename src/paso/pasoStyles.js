@@ -35,4 +35,7 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#FFFFFF",
   },
+  trabajaderaCard: {
+    marginBottom: 10,
+  },
 });
