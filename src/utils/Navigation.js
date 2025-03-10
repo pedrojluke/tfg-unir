@@ -7,7 +7,7 @@ import CostaleroDetailScreen from "../costaleroDetail/costaleroDetailScreen";
 import CostaleroScreen from "../costalero/costaleroScreen";
 import EnsayoMenuScreen from "../ensayoMenu/ensayoMenuScreen";
 import MainScreen from "../main/mainScreen";
-import PasoDetailMenuScreen from "../screens/PasoDetailMenu";
+import PasoDetailMenuScreen from "../pasoDetailMenu/pasoDetailMenuScreen";
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
