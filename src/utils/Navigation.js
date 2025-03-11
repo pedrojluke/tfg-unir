@@ -1,8 +1,8 @@
 import * as TEXTS from "./Texts";
 
-import AddEnsayoScreen from "../screens/AddEnsayo";
+import AddEnsayoScreen from "../ensayo/AddEnsayo";
 import AddPasoScreen from "../paso/pasoScreen";
-import AsignarCostalerosScreen from "../screens/AsignarCostalerosScreen";
+import AsignarCostalerosScreen from "../asignacion/AsignarCostalerosScreen";
 import CostaleroDetailScreen from "../costaleroDetail/costaleroDetailScreen";
 import CostaleroScreen from "../costalero/costaleroScreen";
 import EnsayoMenuScreen from "../ensayoMenu/ensayoMenuScreen";
