@@ -47,7 +47,7 @@ const CostaleroForm = ({
         />
         <TextInput
           label={TEXTS.altura}
-          value={costalero.altura}
+          value={costalero.altura ? costalero.altura.toString() : ""}
           onChangeText={(text) =>
             setCostalero((prev) => ({ ...prev, altura: text }))
           }
