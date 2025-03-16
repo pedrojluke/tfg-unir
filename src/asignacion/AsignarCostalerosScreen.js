@@ -105,7 +105,6 @@ const AsignarCostalerosScreen = () => {
         return;
       }
 
-      // 🔹 Recorremos cada trabajadera y sus posiciones
       for (const trabajadera of trabajaderas) {
         const trabajaderaId = trabajadera.id;
 
@@ -120,7 +119,6 @@ const AsignarCostalerosScreen = () => {
               posicion: index, // Arriba en la lista es N, abajo es 0
             };
 
-            // 🔹 Guardamos la asignación en Firestore
             const asignacionesRef = collection(
               db,
               `pasos/${pasoId}/ensayos/${ensayoId}/asignaciones`
@@ -142,8 +140,8 @@ const AsignarCostalerosScreen = () => {
     const asignados = new Set(
       Object.values(asignaciones)
         .flat()
-        .filter((c) => c !== null) // Solo tomamos los que están asignados
-        .map((c) => c.id) // Extraemos solo los IDs
+        .filter((c) => c !== null)
+        .map((c) => c.id)
     );
 
     const noAsignados = costalerosDetalles.filter((c) => !asignados.has(c.id));
@@ -184,16 +182,16 @@ const AsignarCostalerosScreen = () => {
     const asignados = Object.values(asignaciones).flat();
 
     return costalerosDetalles
-      .filter((c) => !asignados.some((a) => a?.id === c.id)) // Excluir ya asignados
+      .filter((c) => !asignados.some((a) => a?.id === c.id))
       .filter(
         (c) => c.altura >= limiteInferior && c.altura <= alturaTrabajadera
-      ); // Excluir fuera del rango
+      );
   };
 
   const borrarAsignacion = (trabajaderaId, posicion) => {
     setAsignaciones((prev) => {
       const nuevaAsignacion = [...prev[trabajaderaId]];
-      nuevaAsignacion[posicion] = null; // Se deja vacío
+      nuevaAsignacion[posicion] = null;
 
       return {
         ...prev,
@@ -422,7 +420,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
   saveButton: {
     marginTop: 20,
-    backgroundColor: "#4CAF50", // Verde para indicar acción de guardado
+    backgroundColor: "#4CAF50",
     padding: 10,
     borderRadius: 8,
     alignSelf: "center",
