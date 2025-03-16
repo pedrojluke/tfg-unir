@@ -1,6 +1,8 @@
 # 📌 Desarrollo de aplicación para distribución de costaleros usando algoritmos de optimización.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+![React Native](https://img.shields.io/badge/React%20Native-0.72-blue.svg)
+![Firebase](https://img.shields.io/badge/Firebase-Backend-orange.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 > Este Trabajo Fin de Grado busca optimizar la asignación de costaleros en los pasos de Semana Santa mediante programación lineal y optimización matemática, reduciendo la ineficiencia del método tradicional basado en la experiencia del capataz. El objetivo es minimizar la diferencia de altura entre los costaleros y las trabajaderas, reduciendo el uso de suplementos y mejorando la movilidad dentro del paso. Tras evaluar varios algoritmos, se ha seleccionado Kuhn-Munkres como la mejor solución. La propuesta final es una aplicación multiplataforma en React Native, integrada con Firebase, que permite al capataz gestionar ensayos, pasos y costaleros de manera eficiente, agilizando la reorganización ante imprevistos.
 
@@ -15,14 +17,21 @@
 
 ```
 📦 tfg-unir
-├── 📂 src          # Código fuente4
-│   ├── 📂 service  # Servicios
-│   ├── 📂 screens  # Componentes
-│   ├── 📂 utils    # Constantes y otros
-├── 📜 .env         # API keys de Firebase
-├── 📜 App.js       # Main del proyecto
-├── 📜 README.md    # Documentación principal
-└── 📜 package.json # Configuración del proyecto
+├── 📂 src                  # Código fuente
+│   ├── 📂 service          # Servicios
+│   ├── 📂 asignacion       # Módulo de asignación de costaleros
+│   ├── 📂 costalero        # Registro de Costaleros
+│   ├── 📂 costaleroDetail  # Detalle de Costalero
+│   ├── 📂 ensayo           # Gestión de ensayos
+│   ├── 📂 ensayoMenu       # Menú de ensayos
+│   ├── 📂 main             # Módulo principal de la aplicación
+│   ├── 📂 paso             # Registro de Paso
+│   ├── 📂 pasoDetailMenu   # Detalle del paso
+│   ├── 📂 utils            # Constantes y otros
+├── 📜 .env                 # API keys de Firebase
+├── 📜 App.js               # Main del proyecto
+├── 📜 README.md            # Documentación principal
+└── 📜 package.json         # Configuración del proyecto
 ```
 
 ## 🛠️ Instalación
