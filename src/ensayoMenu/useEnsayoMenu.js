@@ -25,7 +25,12 @@ const useEnsayoMenu = (pasoId) => {
         id: doc.id,
         ...doc.data(),
       }));
-      setEnsayos(ensayosList);
+
+      const ensayosPorFecha = ensayosList.sort(
+        (a, b) => new Date(b.fecha) - new Date(a.fecha)
+      );
+
+      setEnsayos(ensayosPorFecha);
     } catch (error) {
       console.error(TEXTS.errorGettingEnsayos, error);
     } finally {
