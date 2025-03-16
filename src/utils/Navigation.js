@@ -15,25 +15,45 @@ const Stack = createStackNavigator();
 
 const StackNavigator = () => (
   <Stack.Navigator>
-    <Stack.Screen name={TEXTS.SCREENS.MENU_PRINCIPAL} component={MainScreen} />
-    <Stack.Screen name={TEXTS.SCREENS.ADD_PASO} component={AddPasoScreen} />
+    <Stack.Screen
+      name={TEXTS.SCREENS.MENU_PRINCIPAL}
+      component={MainScreen}
+      options={{ headerTitle: "" }}
+    />
+    <Stack.Screen
+      name={TEXTS.SCREENS.ADD_PASO}
+      component={AddPasoScreen}
+      options={{ headerTitle: "" }}
+    />
     <Stack.Screen
       name={TEXTS.SCREENS.ADD_COSTALERO}
       component={CostaleroScreen}
+      options={{ headerTitle: "" }}
     />
     <Stack.Screen
       name={TEXTS.SCREENS.VER_COSTALEROS}
       component={CostaleroDetailScreen}
+      options={{ headerTitle: "" }}
     />
     <Stack.Screen
       name={TEXTS.SCREENS.PASO_DETAILS}
       component={PasoDetailMenuScreen}
+      options={{ headerTitle: "" }}
     />
-    <Stack.Screen name={TEXTS.SCREENS.ENSAYOS} component={EnsayoMenuScreen} />
-    <Stack.Screen name={TEXTS.SCREENS.ADD_ENSAYO} component={AddEnsayoScreen} />
+    <Stack.Screen
+      name={TEXTS.SCREENS.ENSAYOS}
+      component={EnsayoMenuScreen}
+      options={{ headerTitle: "" }}
+    />
+    <Stack.Screen
+      name={TEXTS.SCREENS.ADD_ENSAYO}
+      component={AddEnsayoScreen}
+      options={{ headerTitle: "" }}
+    />
     <Stack.Screen
       name={TEXTS.SCREENS.ASIGNAR_COSTALEROS}
       component={AsignarCostalerosScreen}
+      options={{ headerTitle: "" }}
     />
   </Stack.Navigator>
 );
