@@ -7,7 +7,7 @@ import { styles } from "./pasoDetailMenuStyles";
 import { usePasoDetailMenu } from "./usePasoDetailMenu.js";
 
 const PasoDetailMenuScreen = () => {
-  const { nombrePaso, handleNavigation } = usePasoDetailMenu();
+  const { nombrePaso, handleNavigation, createPDF } = usePasoDetailMenu();
 
   return (
     <View style={styles.container}>
@@ -42,7 +42,14 @@ const PasoDetailMenuScreen = () => {
         >
           {TEXTS.viewCostaleros}
         </Button>
-
+        <Button
+          mode={CSS.contained}
+          style={styles.optionButton}
+          labelStyle={styles.buttonText}
+          onPress={createPDF}
+        >
+          {TEXTS.createPDF}
+        </Button>
         <Button
           mode={CSS.contained}
           style={styles.optionButton}
